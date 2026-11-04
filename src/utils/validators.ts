@@ -40,6 +40,7 @@ import { type SyncResponse, SyncResponseSchema } from '../types/sync/response'
 import { TaskSchema } from '../types/tasks/types'
 import {
     AddProjectFromTemplateIdResponseSchema,
+    TemplateCategorySchema,
     TemplateContentResponseSchema,
     TemplateSchema,
 } from '../types/templates/types'
@@ -140,7 +141,11 @@ export const { validate: validateLabel, validateArray: validateLabelArray } =
 export const { validate: validateComment, validateArray: validateCommentArray } =
     createValidator(CommentSchema)
 
-export const { validate: validateTemplate } = createValidator(TemplateSchema)
+export const { validate: validateTemplate, validateArray: validateTemplateArray } =
+    createValidator(TemplateSchema)
+
+export const { validateArray: validateTemplateCategoryArray } =
+    createValidator(TemplateCategorySchema)
 
 export const { validate: validateAddProjectFromTemplateIdResponse } = createValidator(
     AddProjectFromTemplateIdResponseSchema,
