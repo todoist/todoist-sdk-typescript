@@ -93,7 +93,7 @@ describe('TodoistApi template endpoints', () => {
         })
     })
 
-    describe('createProjectFromTemplate', () => {
+    describe('createProjectFromCsv', () => {
         test('uploads file and returns validated response', async () => {
             mockedUploadMultipartFile.mockResolvedValue({
                 status: 'ok',
@@ -106,7 +106,7 @@ describe('TodoistApi template endpoints', () => {
             })
 
             const api = getTarget()
-            const result = await api.createProjectFromTemplate({
+            const result = await api.createProjectFromCsv({
                 name: 'New Project',
                 file: Buffer.from('template content'),
                 fileName: 'template.csv',
@@ -135,7 +135,7 @@ describe('TodoistApi template endpoints', () => {
             })
 
             const api = getTarget()
-            await api.createProjectFromTemplate({
+            await api.createProjectFromCsv({
                 name: 'Workspace Project',
                 file: Buffer.from('content'),
                 fileName: 'template.csv',
@@ -150,7 +150,7 @@ describe('TodoistApi template endpoints', () => {
         })
     })
 
-    describe('importTemplateIntoProject', () => {
+    describe('importCsvIntoProject', () => {
         test('uploads file and returns validated response', async () => {
             mockedUploadMultipartFile.mockResolvedValue({
                 status: 'ok',
@@ -162,7 +162,7 @@ describe('TodoistApi template endpoints', () => {
             })
 
             const api = getTarget()
-            const result = await api.importTemplateIntoProject({
+            const result = await api.importCsvIntoProject({
                 projectId: 'proj_123',
                 file: Buffer.from('template content'),
                 fileName: 'template.csv',
@@ -182,7 +182,7 @@ describe('TodoistApi template endpoints', () => {
             const api = getTarget()
 
             await expect(
-                api.importTemplateIntoProject({ projectId: '', file: Buffer.from('content') }),
+                api.importCsvIntoProject({ projectId: '', file: Buffer.from('content') }),
             ).rejects.toThrow()
             expect(mockedUploadMultipartFile).not.toHaveBeenCalled()
         })
