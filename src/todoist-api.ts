@@ -175,8 +175,8 @@ import {
     TemplateContentResponse,
     CreateTemplateFromCSVArgs,
     PreviewTemplateFromCSVArgs,
-    UpdateUserTemplateArgs,
-    UserTemplatePreview,
+    UpdateTemplateArgs,
+    TemplateFromCSVPreview,
     GetTemplateArgs,
     GetTemplateCategoriesArgs,
     GetTemplatesArgs,
@@ -1799,7 +1799,7 @@ export class TodoistApi {
     }
 
     /**
-     * Saves a project as a user template.
+     * Saves a project as a template.
      *
      * Task assignments are kept only when the template is saved to a workspace. Pass `content`
      * to save an edited draft from `previewProjectAsTemplate` instead of the project as it is.
@@ -1816,7 +1816,7 @@ export class TodoistApi {
     }
 
     /**
-     * Updates a user template. Omitted fields stay unchanged.
+     * Updates a saved template. Omitted fields stay unchanged.
      *
      * Pass `projectId` to replace the template's content with that project's current content.
      * A shared workspace template can be edited by its author or a workspace admin; only the
@@ -1827,12 +1827,12 @@ export class TodoistApi {
      * @param requestId - Optional custom identifier for the request.
      * @returns A promise that resolves to the updated template.
      */
-    async updateUserTemplate(
+    async updateTemplate(
         templateId: string,
-        args: UpdateUserTemplateArgs,
+        args: UpdateTemplateArgs,
         requestId?: string,
     ): Promise<Template> {
-        return this.templateClient.updateUserTemplate(templateId, args, requestId)
+        return this.templateClient.updateTemplate(templateId, args, requestId)
     }
 
     /**
@@ -1845,14 +1845,14 @@ export class TodoistApi {
     async previewTemplateFromCSV(
         args: PreviewTemplateFromCSVArgs,
         requestId?: string,
-    ): Promise<UserTemplatePreview> {
+    ): Promise<TemplateFromCSVPreview> {
         return this.templateClient.previewTemplateFromCSV(args, requestId)
     }
 
     /**
      * Creates a personal template from a CSV file.
      *
-     * Task assignees are discarded. Use `updateUserTemplate` with `workspaceId` to move the
+     * Task assignees are discarded. Use `updateTemplate` with `workspaceId` to move the
      * template into a workspace afterwards.
      *
      * @param args - The CSV `file`, or a staged `uploadedFileName`, plus the template's name, description and color.
