@@ -247,6 +247,11 @@ export type UpdateTemplateArgs = {
     workspaceId?: string
     /** Share the template with workspace members, or stop sharing it. Only the author can change this. */
     sharedWithWorkspaceMembers?: boolean
+    /**
+     * Replace the template's content, e.g. as returned by `getTemplateContent` with edits.
+     * Anything left out is removed. Can't be combined with `projectId`.
+     */
+    content?: TemplateContent
 }
 
 /**
@@ -281,4 +286,13 @@ export type AddTemplateArgs = RequireExactlyOne<{
     description: string
     /** Color of the template: a color key (e.g. `'lime_green'`) or its numeric ID (30-49). */
     color: ColorKey | number
+}
+
+/**
+ * Arguments for reading a template's content.
+ * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/preview_template_api_v1_templates__template_id__preview_get
+ */
+export type GetTemplateContentArgs = {
+    /** Language of gallery template content (default: `'en'`). Saved templates are not translated. */
+    locale?: string
 }
