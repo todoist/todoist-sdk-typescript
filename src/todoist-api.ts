@@ -171,7 +171,7 @@ import {
     CreateProjectFromTemplateResponse,
     AddProjectFromTemplateIdArgs,
     AddProjectFromTemplateIdResponse,
-    CreateUserTemplateArgs,
+    SaveProjectAsTemplateArgs,
     Template,
     ImportTemplateIntoProjectArgs,
     ImportTemplateFromIdArgs,
@@ -1737,8 +1737,11 @@ export class TodoistApi {
      * @param requestId - Optional custom identifier for the request.
      * @returns A promise that resolves to the saved template.
      */
-    async createUserTemplate(args: CreateUserTemplateArgs, requestId?: string): Promise<Template> {
-        return this.templateClient.createUserTemplate(args, requestId)
+    async saveProjectAsTemplate(
+        args: SaveProjectAsTemplateArgs,
+        requestId?: string,
+    ): Promise<Template> {
+        return this.templateClient.saveProjectAsTemplate(args, requestId)
     }
 
     /**
