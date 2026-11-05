@@ -32,7 +32,7 @@ import type {
     GetTemplatesArgs,
     GetTemplatesByIdsArgs,
     GetTemplatesResponse,
-    ExportTemplateFileArgs,
+    ExportProjectAsCSVArgs,
     ExportTemplateUrlArgs,
     ExportTemplateUrlResponse,
     ImportTemplateFromIdArgs,
@@ -73,7 +73,7 @@ export class TemplateClient extends BaseClient {
         return getTemplatesBaseUri(this.syncApiBase)
     }
 
-    async exportTemplateAsFile(args: ExportTemplateFileArgs): Promise<string> {
+    async exportProjectAsCSV(args: ExportProjectAsCSVArgs): Promise<string> {
         const response = await request<string>({
             httpMethod: 'GET',
             baseUri: this.syncApiBase,

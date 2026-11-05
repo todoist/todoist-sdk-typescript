@@ -54,7 +54,7 @@ describe('TodoistApi template endpoints', () => {
         vi.clearAllMocks()
     })
 
-    describe('exportTemplateAsFile', () => {
+    describe('exportProjectAsCSV', () => {
         test('returns file content from rest client', async () => {
             server.use(
                 http.get(`${getSyncBaseUri()}templates/file`, () => {
@@ -65,7 +65,7 @@ describe('TodoistApi template endpoints', () => {
             )
             const api = getTarget()
 
-            const result = await api.exportTemplateAsFile({ projectId: '123' })
+            const result = await api.exportProjectAsCSV({ projectId: '123' })
 
             expect(result).toBe('task,priority\nBuy milk,4')
         })
