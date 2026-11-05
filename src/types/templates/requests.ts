@@ -49,7 +49,7 @@ export type ExportTemplateUrlResponse = {
 
 /**
  * Arguments for creating a project from a template file.
- * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/create_project_from_file_api_v1_templates_create_project_from_file_post
+ * @see https://developer.todoist.com/api/v1/#tag/Projects/operation/create_project_from_csv_api_v1_projects_import_post
  */
 export type CreateProjectFromTemplateArgs = TemplateFileUpload & {
     /** Name for the new project. */
@@ -73,7 +73,7 @@ export type CreateProjectFromTemplateResponse = {
 
 /**
  * Arguments for importing a template file into an existing project.
- * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/import_into_project_from_file_api_v1_templates_import_into_project_from_file_post
+ * @see https://developer.todoist.com/api/v1/#tag/Projects/operation/import_project_csv_api_v1_projects__project_id__import_post
  */
 export type ImportTemplateIntoProjectArgs = TemplateFileUpload & {
     /** The project ID to import into. */
@@ -82,7 +82,7 @@ export type ImportTemplateIntoProjectArgs = TemplateFileUpload & {
 
 /**
  * Arguments for importing a template by ID into an existing project.
- * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/import_into_project_from_template_id_api_v1_templates_import_into_project_from_template_id_post
+ * @see https://developer.todoist.com/api/v1/#tag/Projects/operation/import_project_template_api_v1_projects__project_id__import_template_post
  */
 export type ImportTemplateFromIdArgs = {
     /** The project ID to import into. */
