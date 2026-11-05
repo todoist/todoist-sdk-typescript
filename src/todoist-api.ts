@@ -167,8 +167,8 @@ import {
     ExportTemplateFileArgs,
     ExportTemplateUrlArgs,
     ExportTemplateUrlResponse,
-    CreateProjectFromCsvArgs,
-    CreateProjectFromCsvResponse,
+    AddProjectFromCSVArgs,
+    AddProjectFromCSVResponse,
     AddProjectFromTemplateIdArgs,
     AddProjectFromTemplateIdResponse,
     SaveProjectAsTemplateArgs,
@@ -185,7 +185,7 @@ import {
     GetTemplatesResponse,
     Template,
     TemplateCategory,
-    ImportCsvIntoProjectArgs,
+    ImportCSVIntoProjectArgs,
     ImportTemplateFromIdArgs,
     ImportTemplateResponse,
 } from './types/templates'
@@ -1717,11 +1717,11 @@ export class TodoistApi {
      * @param requestId - Optional custom identifier for the request.
      * @returns A promise that resolves to the created project data.
      */
-    async createProjectFromCsv(
-        args: CreateProjectFromCsvArgs,
+    async addProjectFromCSV(
+        args: AddProjectFromCSVArgs,
         requestId?: string,
-    ): Promise<CreateProjectFromCsvResponse> {
-        return this.templateClient.createProjectFromCsv(args, requestId)
+    ): Promise<AddProjectFromCSVResponse> {
+        return this.templateClient.addProjectFromCSV(args, requestId)
     }
 
     /**
@@ -1896,11 +1896,11 @@ export class TodoistApi {
      * @param requestId - Optional custom identifier for the request.
      * @returns A promise that resolves to the import result.
      */
-    async importCsvIntoProject(
-        args: ImportCsvIntoProjectArgs,
+    async importCSVIntoProject(
+        args: ImportCSVIntoProjectArgs,
         requestId?: string,
     ): Promise<ImportTemplateResponse> {
-        return this.templateClient.importCsvIntoProject(args, requestId)
+        return this.templateClient.importCSVIntoProject(args, requestId)
     }
 
     /**

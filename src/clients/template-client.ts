@@ -18,10 +18,10 @@ import {
 import { request } from '../transport/http-client'
 import { TodoistArgumentError } from '../types/errors'
 import type {
-    CreateProjectFromCsvArgs,
+    AddProjectFromCSVArgs,
     AddProjectFromTemplateIdArgs,
     AddProjectFromTemplateIdResponse,
-    CreateProjectFromCsvResponse,
+    AddProjectFromCSVResponse,
     SaveProjectAsTemplateArgs,
     TemplateContent,
     TemplateContentResponse,
@@ -36,7 +36,7 @@ import type {
     ExportTemplateUrlArgs,
     ExportTemplateUrlResponse,
     ImportTemplateFromIdArgs,
-    ImportCsvIntoProjectArgs,
+    ImportCSVIntoProjectArgs,
     ImportTemplateResponse,
     PreviewTemplateFromCsvArgs,
     UpdateTemplateArgs,
@@ -99,10 +99,10 @@ export class TemplateClient extends BaseClient {
         return data
     }
 
-    async createProjectFromCsv(
-        args: CreateProjectFromCsvArgs,
+    async addProjectFromCSV(
+        args: AddProjectFromCSVArgs,
         requestId?: string,
-    ): Promise<CreateProjectFromCsvResponse> {
+    ): Promise<AddProjectFromCSVResponse> {
         const { file, fileName, name, workspaceId } = args
         const additionalFields: Record<string, string> = { name }
         if (workspaceId !== undefined && workspaceId !== null) {
@@ -122,11 +122,11 @@ export class TemplateClient extends BaseClient {
         })
         return this.validateTemplateResponse(
             data as Record<string, unknown>,
-        ) as CreateProjectFromCsvResponse
+        ) as AddProjectFromCSVResponse
     }
 
-    async importCsvIntoProject(
-        args: ImportCsvIntoProjectArgs,
+    async importCSVIntoProject(
+        args: ImportCSVIntoProjectArgs,
         requestId?: string,
     ): Promise<ImportTemplateResponse> {
         const { file, fileName, projectId } = args
