@@ -38,7 +38,7 @@ import {
 import { SectionSchema } from '../types/sections/types'
 import { type SyncResponse, SyncResponseSchema } from '../types/sync/response'
 import { TaskSchema } from '../types/tasks/types'
-import { TemplateSchema } from '../types/templates/types'
+import { TemplateContentResponseSchema, TemplateSchema } from '../types/templates/types'
 import { UiExtensionSchema } from '../types/ui-extensions/types'
 import { UserSchema, CurrentUserSchema } from '../types/users/types'
 import {
@@ -137,6 +137,10 @@ export const { validate: validateComment, validateArray: validateCommentArray } 
     createValidator(CommentSchema)
 
 export const { validate: validateTemplate } = createValidator(TemplateSchema)
+
+export const { validate: validateTemplateContentResponse } = createValidator(
+    TemplateContentResponseSchema,
+)
 
 export const { validate: validateUser, validateArray: validateUserArray } =
     createValidator(UserSchema)
