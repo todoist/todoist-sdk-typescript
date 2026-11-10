@@ -43,7 +43,7 @@ import {
     TemplateCategorySchema,
     TemplateContentResponseSchema,
     TemplateSchema,
-    TemplateFromCSVPreviewSchema,
+    StagedCSVFileSchema,
 } from '../types/templates/types'
 import { UiExtensionSchema } from '../types/ui-extensions/types'
 import { UserSchema, CurrentUserSchema } from '../types/users/types'
@@ -155,9 +155,7 @@ export const { validate: validateAddProjectFromTemplateIdResponse } = createVali
 export const { validate: validateTemplateContentResponse } = createValidator(
     TemplateContentResponseSchema,
 )
-export const { validate: validateTemplateFromCSVPreview } = createValidator(
-    TemplateFromCSVPreviewSchema,
-)
+export const { validate: validateStagedCSVFile } = createValidator(StagedCSVFileSchema)
 
 export const { validate: validateUser, validateArray: validateUserArray } =
     createValidator(UserSchema)
