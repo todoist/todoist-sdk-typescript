@@ -173,7 +173,7 @@ import {
     AddProjectFromTemplateIdResponse,
     SaveProjectAsTemplateArgs,
     TemplateContentResponse,
-    CreateTemplateFromCSVArgs,
+    AddTemplateArgs,
     PreviewTemplateFromCSVArgs,
     UpdateTemplateArgs,
     TemplateFromCSVPreview,
@@ -1850,20 +1850,19 @@ export class TodoistApi {
     }
 
     /**
-     * Creates a personal template from a CSV file.
+     * Creates a personal template from template content, a CSV file, or a CSV staged with
+     * `previewTemplateFromCSV`, without a project. To save a project as a template, use
+     * `saveProjectAsTemplate`.
      *
      * Task assignees are discarded. Use `updateTemplate` with `workspaceId` to move the
      * template into a workspace afterwards.
      *
-     * @param args - The CSV `file`, or a staged `uploadedFileName`, plus the template's name, description and color.
+     * @param args - The `content`, the CSV `file` or a staged `uploadedFileName`, plus the template's name, description and color.
      * @param requestId - Optional custom identifier for the request.
      * @returns A promise that resolves to the saved template.
      */
-    async createTemplateFromCSV(
-        args: CreateTemplateFromCSVArgs,
-        requestId?: string,
-    ): Promise<Template> {
-        return this.templateClient.createTemplateFromCSV(args, requestId)
+    async addTemplate(args: AddTemplateArgs, requestId?: string): Promise<Template> {
+        return this.templateClient.addTemplate(args, requestId)
     }
 
     /**

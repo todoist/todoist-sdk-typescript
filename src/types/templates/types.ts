@@ -206,6 +206,6 @@ export const StagedCSVFileSchema = z.object({ uploadedFileName: z.string() })
 
 /**
  * A staged CSV file and the template content it would create, as a draft. To save it, pass
- * `uploadedFileName` to `createTemplateFromCSV`, or the edited `content`.
+ * `uploadedFileName` to `addTemplate`, or the edited `content`.
  */
 export type TemplateFromCSVPreview = TemplateContentResponse & { uploadedFileName: string }
