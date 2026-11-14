@@ -10,6 +10,8 @@ Requires Node 20.18.1+.
 npm install @todoist/sdk
 ```
 
+In a browser, use it through a bundler such as rspack, Vite or esbuild: the package's `browser` field leaves undici and Node's `fs` and `path` out of the bundle, and requests go through the browser's `fetch`.
+
 Previously published as `@doist/todoist-sdk`.
 
 ### Usage

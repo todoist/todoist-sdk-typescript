@@ -243,7 +243,9 @@ export async function uploadMultipartFile(args: UploadMultipartFileArgs): Promis
         filePart = file
         resolvedFileName = fileName || (file instanceof File ? file.name : undefined) || 'upload'
     } else if (typeof file === 'string') {
-        // File path: Node-only, so import lazily to keep browser bundles clean.
+        // File path: Node-only, so imported lazily, only when a path is given.
+        // Bundlers still follow the import, so the package's `browser` field
+        // maps `fs` and `path` to empty modules for a browser build.
         const [fsModule, pathModule] = await Promise.all([import('fs'), import('path')])
         resolvedFileName = fileName || pathModule.basename(file)
         // `openAsBlob` reads the file lazily, so a large upload is not pulled
