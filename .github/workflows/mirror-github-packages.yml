@@ -1,0 +1,75 @@
+name: Mirror to GitHub Packages
+
+# Publishes each release npm already has to GitHub Packages too, as the same
+# tarball. Projects that read the @todoist scope from GitHub Packages, where
+# Doist's private @todoist packages are, can then install this one from there:
+# npm reads a whole scope from one registry.
+on:
+    # Sent for the GitHub release semantic-release creates with the release
+    # bot's token, once npm has the version.
+    release:
+        types: [published]
+    # Mirrors a version npm already has, such as one released before this
+    # workflow existed.
+    workflow_dispatch:
+        inputs:
+            version:
+                description: The version to mirror, such as 20.0.1, as published to npm
+                required: true
+                type: string
+            tag:
+                description: The dist-tag, such as backfill for a version older than the latest one
+                required: true
+                default: latest
+                type: string
+
+permissions:
+    contents: read
+    packages: write
+
+concurrency:
+    group: ${{ github.workflow }}
+    cancel-in-progress: false
+
+jobs:
+    mirror:
+        name: Mirror
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 24
+
+            - name: Publish npm's tarball to GitHub Packages
+              working-directory: ${{ runner.temp }}
+              env:
+                  VERSION: ${{ inputs.version || github.event.release.tag_name }}
+                  TAG: ${{ inputs.tag || (github.event.release.prerelease && 'next' || 'latest') }}
+                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  version="${VERSION#v}"
+                  spec="@todoist/sdk@${version}"
+
+                  # Reads and publishes on GitHub Packages only; the tarball comes from npm.
+                  github_npmrc="${RUNNER_TEMP}/github.npmrc"
+                  printf '%s\n' \
+                      'registry=https://npm.pkg.github.com/' \
+                      '@todoist:registry=https://npm.pkg.github.com/' \
+                      '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}' > "$github_npmrc"
+
+                  if NPM_CONFIG_USERCONFIG="$github_npmrc" npm view "$spec" version > /dev/null 2>&1; then
+                      echo "GitHub Packages already has ${spec}."
+                      exit 0
+                  fi
+
+                  tarball=$(npm pack "$spec" --registry=https://registry.npmjs.org/ --silent)
+
+                  # npm's copy carries provenance for the release build; this
+                  # copy is published here, so it claims none.
+                  NPM_CONFIG_USERCONFIG="$github_npmrc" npm publish "$tarball" \
+                      --ignore-scripts --provenance=false --tag="$TAG"
+
+                  NPM_CONFIG_USERCONFIG="$github_npmrc" npm view "$spec" version

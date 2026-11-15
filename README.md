@@ -302,6 +302,10 @@ The release process is fully automated:
 
 Users of the API client can then update to the new version in their `package.json`.
 
+### GitHub Packages
+
+Each release is also published to GitHub Packages, as the same tarball npm has, for projects that read the `@todoist` scope from there: npm reads a whole scope from one registry. The `mirror-github-packages.yml` workflow does it when the GitHub release is published. To mirror a version released before then, run the workflow by hand with that version, and with the `backfill` tag for a version older than the latest one so `latest` keeps pointing at the newest.
+
 ### Feedback
 
 Any feedback, such as bugs, questions, comments, etc. can be reported as _Issues_ in this repository, and will be handled by us in Todoist.
