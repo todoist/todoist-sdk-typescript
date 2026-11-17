@@ -253,14 +253,14 @@ export type UpdateTemplateArgs = {
  * Arguments for staging a CSV file to preview the template it would create.
  * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/preview_user_template_api_v1_templates_user_preview_post
  */
-export type PreviewTemplateFromCSVArgs = TemplateFileUpload
+export type PreviewTemplateFromCsvArgs = TemplateFileUpload
 
 /**
  * Arguments for creating a personal template without a project.
  *
  * Provide exactly one of: `content`, for a template written from scratch or a draft from
- * `previewTemplateFromCSV` with edits, as the Todoist web app does; a CSV `file`; or the
- * `uploadedFileName` returned by `previewTemplateFromCSV`, to save a staged file without uploading
+ * `previewTemplateFromCsv` with edits, as the Todoist web app does; a CSV `file`; or the
+ * `uploadedFileName` returned by `previewTemplateFromCsv`, to save a staged file without uploading
  * it again.
  *
  * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/import_user_template_from_file_api_v1_templates_user_import_post
@@ -268,9 +268,9 @@ export type PreviewTemplateFromCSVArgs = TemplateFileUpload
 export type AddTemplateArgs = RequireExactlyOne<{
     /** A CSV file to upload, with `fileName`. */
     file: TemplateFileUpload['file']
-    /** A staged file from `previewTemplateFromCSV`. */
+    /** A staged file from `previewTemplateFromCsv`. */
     uploadedFileName: string
-    /** Template content: written from scratch, or a draft from `previewTemplateFromCSV` with edits. */
+    /** Template content: written from scratch, or a draft from `previewTemplateFromCsv` with edits. */
     content: TemplateContent
 }> & {
     /** Name of the uploaded `file`. */

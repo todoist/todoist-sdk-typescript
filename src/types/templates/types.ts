@@ -202,7 +202,7 @@ export const TemplateCategorySchema = z.object({
 /** A curated category used to group templates in the Todoist gallery. */
 export type TemplateCategory = z.infer<typeof TemplateCategorySchema>
 
-export const TemplateFromCSVPreviewSchema = z.intersection(
+export const TemplateFromCsvPreviewSchema = z.intersection(
     TemplateContentResponseSchema,
     z.object({ uploadedFileName: z.string() }),
 )
@@ -211,4 +211,4 @@ export const TemplateFromCSVPreviewSchema = z.intersection(
  * A staged CSV file and the template content it would create, as a draft. To save it, pass
  * `uploadedFileName` to `addTemplate`, or the edited `content`.
  */
-export type TemplateFromCSVPreview = z.infer<typeof TemplateFromCSVPreviewSchema>
+export type TemplateFromCsvPreview = z.infer<typeof TemplateFromCsvPreviewSchema>

@@ -35,9 +35,9 @@ import type {
     ImportTemplateFromIdArgs,
     ImportTemplateIntoProjectArgs,
     ImportTemplateResponse,
-    PreviewTemplateFromCSVArgs,
+    PreviewTemplateFromCsvArgs,
     UpdateTemplateArgs,
-    TemplateFromCSVPreview,
+    TemplateFromCsvPreview,
     Template,
     TemplateCategory,
 } from '../types/templates'
@@ -54,7 +54,7 @@ import {
     validateTemplateContentResponse,
     validateTemplateArray,
     validateTemplateCategoryArray,
-    validateTemplateFromCSVPreview,
+    validateTemplateFromCsvPreview,
 } from '../utils/validators'
 import { BaseClient } from './base-client'
 
@@ -251,10 +251,10 @@ export class TemplateClient extends BaseClient {
         return validateTemplate(data)
     }
 
-    async previewTemplateFromCSV(
-        args: PreviewTemplateFromCSVArgs,
+    async previewTemplateFromCsv(
+        args: PreviewTemplateFromCsvArgs,
         requestId?: string,
-    ): Promise<TemplateFromCSVPreview> {
+    ): Promise<TemplateFromCsvPreview> {
         const data = await uploadMultipartFile({
             baseUrl: this.templatesApiBase,
             authToken: this.authToken,
@@ -266,7 +266,7 @@ export class TemplateClient extends BaseClient {
             customHeaders: this.customHeaders,
             requestId,
         })
-        return validateTemplateFromCSVPreview(data)
+        return validateTemplateFromCsvPreview(data)
     }
 
     async addTemplate(args: AddTemplateArgs, requestId?: string): Promise<Template> {

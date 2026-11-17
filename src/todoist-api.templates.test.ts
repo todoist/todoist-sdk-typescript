@@ -554,7 +554,7 @@ describe('TodoistApi template endpoints', () => {
         })
     })
 
-    describe('previewTemplateFromCSV', () => {
+    describe('previewTemplateFromCsv', () => {
         test('uploads the CSV and renames sync names to SDK ones', async () => {
             mockedUploadMultipartFile.mockResolvedValue({
                 uploadedFileName: '1234567_abcdef_weekly.csv',
@@ -576,7 +576,7 @@ describe('TodoistApi template endpoints', () => {
             })
             const api = getTarget()
 
-            const result = await api.previewTemplateFromCSV({
+            const result = await api.previewTemplateFromCsv({
                 file: Buffer.from('TYPE,CONTENT\ntask,Plan'),
                 fileName: 'weekly.csv',
             })
