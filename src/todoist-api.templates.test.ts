@@ -223,6 +223,22 @@ describe('TodoistApi template endpoints', () => {
             expect(result.tasks).toEqual([])
             expect(result.sections).toEqual([])
         })
+
+        test('rejects an empty project ID before making a request', async () => {
+            let called = false
+            server.use(
+                http.post(`${getSyncBaseUri()}projects/*`, () => {
+                    called = true
+                    return HttpResponse.json({ status: 'ok' })
+                }),
+            )
+            const api = getTarget()
+
+            await expect(
+                api.importTemplateFromId({ projectId: '', templateId: 'product-launch' }),
+            ).rejects.toThrow()
+            expect(called).toBe(false)
+        })
     })
 
     describe('addProjectFromTemplateId', () => {
