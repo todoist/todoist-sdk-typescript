@@ -19,6 +19,11 @@ export function getSyncBaseUri(domainBase: string = BASE_URI): string {
     return new URL(API_BASE_URI, domainBase).toString()
 }
 
+/** Base URI for the saved-template routes, on `TEMPLATES_API_VERSION`. */
+export function getTemplatesBaseUri(domainBase: string = BASE_URI): string {
+    return new URL(`/api/${TEMPLATES_API_VERSION}/`, domainBase).toString()
+}
+
 export function getApiRootBaseUri(domainBase: string = BASE_URI): string {
     return new URL('/', domainBase).toString()
 }

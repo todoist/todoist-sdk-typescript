@@ -1,3 +1,4 @@
+import type { z } from 'zod'
 import type { ColorKey } from '../../utils/colors'
 import type { Comment } from '../comments/types'
 import type { PersonalProject, WorkspaceProject } from '../projects/types'
@@ -5,7 +6,7 @@ import type { Section } from '../sections/types'
 import type { TemplateType } from '../sync/resources/suggestions'
 import type { Task } from '../tasks/types'
 import type { UploadFileArgs } from '../uploads/requests'
-import type { TemplateContent } from './types'
+import type { AddProjectFromTemplateIdResponseSchema, TemplateContent } from './types'
 
 /** The template file to upload, for routes that accept a template CSV. */
 type TemplateFileUpload = Pick<UploadFileArgs, 'file' | 'fileName'>
@@ -142,7 +143,6 @@ export type AddProjectFromTemplateIdArgs = {
 /**
  * Response from creating a new project from a template ID.
  */
-export type AddProjectFromTemplateIdResponse = {
-    status: string
-    projectId: string
-}
+export type AddProjectFromTemplateIdResponse = z.infer<
+    typeof AddProjectFromTemplateIdResponseSchema
+>

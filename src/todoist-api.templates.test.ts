@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 import { TodoistApi } from '.'
-import { getSyncBaseUri } from './consts/endpoints'
+import { getSyncBaseUri, getTemplatesBaseUri } from './consts/endpoints'
 import { server, http, HttpResponse } from './test-utils/msw-setup'
 import { DEFAULT_AUTH_TOKEN, DEFAULT_SECTION, DEFAULT_TASK } from './test-utils/test-defaults'
 import { uploadMultipartFile } from './utils/multipart-upload'
@@ -8,10 +8,6 @@ import { uploadMultipartFile } from './utils/multipart-upload'
 // Mock the multipart upload helper
 vi.mock('./utils/multipart-upload')
 const mockedUploadMultipartFile = vi.mocked(uploadMultipartFile)
-
-function getTemplatesBaseUri() {
-    return getSyncBaseUri().replace('/api/v1/', '/api/v1.6/')
-}
 
 function getTarget() {
     return new TodoistApi(DEFAULT_AUTH_TOKEN)
@@ -206,6 +202,19 @@ describe('TodoistApi template endpoints', () => {
             })
             expect(result).toEqual({ status: 'ok', projectId: '6X7rM8997g3RQmvh' })
         })
+
+        test('rejects a response without a project ID', async () => {
+            server.use(
+                http.post(`${getSyncBaseUri()}projects/from_template`, () =>
+                    HttpResponse.json({ status: 'error' }),
+                ),
+            )
+            const api = getTarget()
+
+            await expect(
+                api.addProjectFromTemplateId({ templateId: 'UT_28Rc62VC22j439VcPJMw9xgWx2' }),
+            ).rejects.toThrow()
+        })
     })
 
     describe('saveProjectAsTemplate', () => {
@@ -382,10 +391,11 @@ describe('TodoistApi template endpoints', () => {
                                 id: 't1',
                                 content: 'Plan',
                                 due: {
-                                    date: '2026-11-13',
-                                    string: 'every friday',
+                                    date: '2026-11-13T09:00:00Z',
+                                    string: 'every friday at 10am',
                                     lang: 'en',
                                     is_recurring: true,
+                                    timezone: 'Europe/Rome',
                                 },
                                 checked: false,
                             },
@@ -402,6 +412,7 @@ describe('TodoistApi template endpoints', () => {
             const result = await api.previewProjectAsTemplate('123')
 
             expect(projectId).toBe('123')
+            expect(result.templateType).toBe('project')
             expect(result.workspaceId).toBeNull()
             expect(result.content.projects).toEqual([{ viewStyle: 'list', description: '' }])
             expect(result.content.tasks).toEqual([
@@ -409,10 +420,11 @@ describe('TodoistApi template endpoints', () => {
                     id: 't1',
                     content: 'Plan',
                     due: {
-                        date: '2026-11-13',
-                        string: 'every friday',
+                        date: '2026-11-13T09:00:00Z',
+                        string: 'every friday at 10am',
                         lang: 'en',
                         isRecurring: true,
+                        timezone: 'Europe/Rome',
                     },
                 },
             ])

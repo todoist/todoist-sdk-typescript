@@ -10,7 +10,7 @@ export type TemplateSource = (typeof TEMPLATE_SOURCES)[number]
 
 // Template discovery reports curated templates as `todoist`, but the user template
 // routes document `doist` for the same thing. Accept both and keep one spelling.
-const TemplateSourceSchema = z
+export const TemplateSourceSchema = z
     .enum([...TEMPLATE_SOURCES, 'doist'])
     .transform((source): TemplateSource => (source === 'doist' ? 'todoist' : source))
 
@@ -76,6 +76,12 @@ export const TemplateSchema = z.object({
  */
 export type Template = z.infer<typeof TemplateSchema>
 
+/** Response from creating a new project from a template ID. */
+export const AddProjectFromTemplateIdResponseSchema = z.object({
+    status: z.string(),
+    projectId: z.string(),
+})
+
 export const TemplateContentDateSchema = z
     .looseObject({
         date: z.string().optional(),
@@ -89,9 +95,9 @@ export const TemplateContentDateSchema = z
     })
 /**
  * A due date or deadline in template content: either a complete date object (`date`, with
- * `string`, `isRecurring` and `timezone` for dues), as `getTemplateContent` returns it, or just the
- * text, e.g. `{ string: "every monday" }`. Fields the SDK doesn't know are kept, so content read
- * with `getTemplateContent` can be sent back without losing them.
+ * `string`, `isRecurring` and `timezone` for dues), as `previewProjectAsTemplate` returns it, or
+ * just the text, e.g. `{ string: "every monday" }`. Fields the SDK doesn't know are kept, so
+ * content read with `previewProjectAsTemplate` can be sent back without losing them.
  */
 export type TemplateContentDate = z.infer<typeof TemplateContentDateSchema>
 
@@ -158,7 +164,7 @@ export const TemplateContentSchema = z.object({
     projectViewOptionsDefaults: z.array(z.looseObject({})),
 })
 /**
- * The full content of a project template, in the shape `updateTemplate` accepts back.
+ * The full content of a project template, in the shape `saveProjectAsTemplate` accepts back.
  * Tasks keep the order they appear in.
  */
 export type TemplateContent = z.infer<typeof TemplateContentSchema>

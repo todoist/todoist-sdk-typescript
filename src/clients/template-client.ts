@@ -6,7 +6,7 @@ import {
     ENDPOINT_REST_TEMPLATES_URL,
     ENDPOINT_REST_TEMPLATES_PREVIEW,
     ENDPOINT_REST_TEMPLATES_USER,
-    TEMPLATES_API_VERSION,
+    getTemplatesBaseUri,
     ENDPOINT_REST_PROJECTS_FROM_TEMPLATE,
 } from '../consts/endpoints'
 import { request } from '../transport/http-client'
@@ -30,6 +30,7 @@ import { uploadMultipartFile } from '../utils/multipart-upload'
 import {
     IdSchema,
     validateCommentArray,
+    validateAddProjectFromTemplateIdResponse,
     validateProjectArray,
     validateSectionArray,
     validateTaskArray,
@@ -48,7 +49,7 @@ import { BaseClient } from './base-client'
 export class TemplateClient extends BaseClient {
     /** Base URI for saved-template routes, on `TEMPLATES_API_VERSION`. */
     private get templatesApiBase(): string {
-        return new URL(`/api/${TEMPLATES_API_VERSION}/`, this.syncApiBase).toString()
+        return getTemplatesBaseUri(this.syncApiBase)
     }
 
     async exportTemplateAsFile(args: ExportTemplateFileArgs): Promise<string> {
@@ -181,7 +182,7 @@ export class TemplateClient extends BaseClient {
         args: AddProjectFromTemplateIdArgs,
         requestId?: string,
     ): Promise<AddProjectFromTemplateIdResponse> {
-        const { data } = await request<AddProjectFromTemplateIdResponse>({
+        const { data } = await request<unknown>({
             httpMethod: 'POST',
             baseUri: this.syncApiBase,
             relativePath: ENDPOINT_REST_PROJECTS_FROM_TEMPLATE,
@@ -191,7 +192,7 @@ export class TemplateClient extends BaseClient {
             payload: args,
             requestId: requestId,
         })
-        return data
+        return validateAddProjectFromTemplateIdResponse(data)
     }
 
     private validateTemplateResponse(data: Record<string, unknown>) {
