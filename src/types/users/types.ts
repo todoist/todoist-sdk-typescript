@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { UserStatusSchema } from '../sync/resources/user-status'
 
 export const UserSchema = z.object({
     id: z.string(),
@@ -57,6 +58,8 @@ export const CurrentUserSchema = z.object({
     daysOff: z.array(z.number().int()),
     weekendStartDay: z.number().int(),
     websocketUrl: z.string().optional(),
+    /** The user's shared status, `null` when none is set or it has expired. */
+    status: UserStatusSchema.nullish(),
 })
 /**
  * Represents the current authenticated user with detailed information.

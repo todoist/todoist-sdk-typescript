@@ -409,7 +409,7 @@ export class TodoistApi {
     }
 
     /**
-     * Retrieves information about the authenticated user.
+     * Retrieves information about the authenticated user, including their shared status.
      *
      * @returns A promise that resolves to the current user's information.
      */

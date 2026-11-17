@@ -112,6 +112,51 @@ describe('TodoistApi user endpoints', () => {
             expect(actual).toEqual(DEFAULT_CURRENT_USER_RESPONSE)
         })
 
+        // The REST user carries the same shared status as the Sync user, null when none is set.
+        test.each([
+            [
+                'a status with every field',
+                {
+                    message: 'Deep work',
+                    emoji: '🎧',
+                    active_until: '2026-10-20T17:00:00Z',
+                    effects: {
+                        pause_notifications: { scope: { mode: 'all' } },
+                        pause_activity: { scope: { mode: 'all' } },
+                    },
+                },
+                {
+                    message: 'Deep work',
+                    emoji: '🎧',
+                    activeUntil: new Date('2026-10-20T17:00:00Z'),
+                    effects: {
+                        pauseNotifications: { scope: { mode: 'all' } },
+                        pauseActivity: { scope: { mode: 'all' } },
+                    },
+                },
+            ],
+            [
+                'an emoji-only status',
+                { message: null, emoji: '🧪', active_until: null, effects: {} },
+                { message: null, emoji: '🧪', activeUntil: null, effects: {} },
+            ],
+            ['no status', null, null],
+        ])('returns the user with %s', async (_label, status, expected) => {
+            server.use(
+                http.get(`${getSyncBaseUri()}${ENDPOINT_REST_USER}`, () => {
+                    return HttpResponse.json(
+                        { ...DEFAULT_CURRENT_USER_RESPONSE, status },
+                        { status: 200 },
+                    )
+                }),
+            )
+            const api = getTarget()
+
+            const actual = await api.getUser()
+
+            expect(actual.status).toEqual(expected)
+        })
+
         test('returns result from rest client against staging', async () => {
             const stagingBaseUrl = 'https://api.todoist-staging.com'
             server.use(
