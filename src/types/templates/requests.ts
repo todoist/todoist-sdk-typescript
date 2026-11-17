@@ -3,10 +3,15 @@ import type { ColorKey } from '../../utils/colors'
 import type { Comment } from '../comments/types'
 import type { PersonalProject, WorkspaceProject } from '../projects/types'
 import type { Section } from '../sections/types'
-import type { TemplateType } from '../sync/resources/suggestions'
+import { TEMPLATE_TYPES, type TemplateType } from '../sync/resources/suggestions'
 import type { Task } from '../tasks/types'
 import type { UploadFileArgs } from '../uploads/requests'
-import type { AddProjectFromTemplateIdResponseSchema, Template, TemplateContent } from './types'
+import {
+    TEMPLATE_SOURCES,
+    type AddProjectFromTemplateIdResponseSchema,
+    type Template,
+    type TemplateContent,
+} from './types'
 
 /** The template file to upload, for routes that accept a template CSV. */
 type TemplateFileUpload = Pick<UploadFileArgs, 'file' | 'fileName'>
@@ -148,12 +153,12 @@ export type AddProjectFromTemplateIdResponse = z.infer<
 >
 
 /** Template type values accepted when listing templates. */
-export const TEMPLATE_TYPE_FILTERS = ['project', 'setup', 'all'] as const
+export const TEMPLATE_TYPE_FILTERS = [...TEMPLATE_TYPES, 'all'] as const
 /** Template type to list, or `'all'` for both. */
 export type TemplateTypeFilter = (typeof TEMPLATE_TYPE_FILTERS)[number]
 
 /** Template source values accepted when listing templates. */
-export const TEMPLATE_SOURCE_FILTERS = ['todoist', 'user', 'workspace', 'all'] as const
+export const TEMPLATE_SOURCE_FILTERS = [...TEMPLATE_SOURCES, 'workspace', 'all'] as const
 /**
  * Where to list templates from: curated by Doist (`'todoist'`), saved by the user (`'user'`),
  * saved to the user's workspaces (`'workspace'`), or all of them (`'all'`).

@@ -466,17 +466,27 @@ describe('TodoistApi template endpoints', () => {
         })
 
         test('rejects an empty ID before making a request', async () => {
+            let called = false
+            server.use(
+                http.get(`${getSyncBaseUri()}templates/*`, () => {
+                    called = true
+                    return HttpResponse.json(RAW_TEMPLATE)
+                }),
+            )
             const api = getTarget()
 
             await expect(api.getTemplate('')).rejects.toThrow()
+            expect(called).toBe(false)
         })
     })
 
     describe('getTemplateCategories', () => {
         test('returns the validated categories', async () => {
+            let templateType: string | null = null
             server.use(
-                http.get(`${getSyncBaseUri()}templates/categories`, () =>
-                    HttpResponse.json({
+                http.get(`${getSyncBaseUri()}templates/categories`, ({ request }) => {
+                    templateType = new URL(request.url).searchParams.get('template_type')
+                    return HttpResponse.json({
                         categories: [
                             {
                                 id: 'work',
@@ -485,13 +495,14 @@ describe('TodoistApi template endpoints', () => {
                                 seo: { title: 'Work templates', description: null },
                             },
                         ],
-                    }),
-                ),
+                    })
+                }),
             )
             const api = getTarget()
 
             const result = await api.getTemplateCategories({ templateType: 'project' })
 
+            expect(templateType).toBe('project')
             expect(result).toEqual([
                 {
                     id: 'work',
