@@ -583,6 +583,7 @@ describe('TodoistApi template endpoints', () => {
 
             expect(mockedUploadMultipartFile).toHaveBeenCalledWith(
                 expect.objectContaining({
+                    baseUrl: getTemplatesBaseUri(),
                     endpoint: 'templates/user/preview',
                     fileName: 'weekly.csv',
                 }),
@@ -625,6 +626,7 @@ describe('TodoistApi template endpoints', () => {
 
             expect(mockedUploadMultipartFile).toHaveBeenCalledWith(
                 expect.objectContaining({
+                    baseUrl: getTemplatesBaseUri(),
                     endpoint: 'templates/user/import',
                     additionalFields: {
                         template_type: 'project',
@@ -709,8 +711,31 @@ describe('TodoistApi template endpoints', () => {
             const api = getTarget()
 
             await expect(
-                api.addTemplate({ name: 'Weekly', description: '', color: 'blue' }),
+                // JavaScript callers can still omit every source; TypeScript rejects it.
+                api.addTemplate({ name: 'Weekly', description: '', color: 'blue' } as never),
             ).rejects.toThrow('needs exactly one of `content`, `file` or `uploadedFileName`')
+        })
+
+        test('rejects several sources before making a request', async () => {
+            const api = getTarget()
+
+            await expect(
+                api.addTemplate({
+                    name: 'Weekly',
+                    description: '',
+                    color: 'blue',
+                    uploadedFileName: '1234567_abcdef_weekly.csv',
+                    content: {
+                        projects: [{ viewStyle: 'list' }],
+                        sections: [],
+                        tasks: [],
+                        comments: [],
+                        projectComments: [],
+                        projectViewOptionsDefaults: [],
+                    },
+                } as never),
+            ).rejects.toThrow('needs exactly one of `content`, `file` or `uploadedFileName`')
+            expect(mockedUploadMultipartFile).not.toHaveBeenCalled()
         })
     })
 

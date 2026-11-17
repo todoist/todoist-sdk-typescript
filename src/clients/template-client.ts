@@ -54,7 +54,7 @@ import {
     validateTemplateContentResponse,
     validateTemplateArray,
     validateTemplateCategoryArray,
-    validateStagedCSVFile,
+    validateTemplateFromCSVPreview,
 } from '../utils/validators'
 import { BaseClient } from './base-client'
 
@@ -266,7 +266,7 @@ export class TemplateClient extends BaseClient {
             customHeaders: this.customHeaders,
             requestId,
         })
-        return { ...validateTemplateContentResponse(data), ...validateStagedCSVFile(data) }
+        return validateTemplateFromCSVPreview(data)
     }
 
     async addTemplate(args: AddTemplateArgs, requestId?: string): Promise<Template> {

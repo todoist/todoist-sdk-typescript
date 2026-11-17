@@ -1,3 +1,4 @@
+import type { RequireExactlyOne } from 'type-fest'
 import type { z } from 'zod'
 import type { ColorKey } from '../../utils/colors'
 import type { Comment } from '../comments/types'
@@ -264,15 +265,20 @@ export type PreviewTemplateFromCSVArgs = TemplateFileUpload
  *
  * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/import_user_template_from_file_api_v1_templates_user_import_post
  */
-export type AddTemplateArgs = Partial<TemplateFileUpload> & {
+export type AddTemplateArgs = RequireExactlyOne<{
+    /** A CSV file to upload, with `fileName`. */
+    file: TemplateFileUpload['file']
+    /** A staged file from `previewTemplateFromCSV`. */
+    uploadedFileName: string
+    /** Template content: written from scratch, or a draft from `previewTemplateFromCSV` with edits. */
+    content: TemplateContent
+}> & {
+    /** Name of the uploaded `file`. */
+    fileName?: TemplateFileUpload['fileName']
     /** Name of the template, up to 255 characters. */
     name: string
     /** Description shown with the template, up to 1,000 characters. */
     description: string
     /** Color of the template: a color key (e.g. `'lime_green'`) or its numeric ID (30-49). */
     color: ColorKey | number
-    /** A staged file from `previewTemplateFromCSV`. */
-    uploadedFileName?: string
-    /** Template content: written from scratch, or a draft from `previewTemplateFromCSV` with edits. */
-    content?: TemplateContent
 }
