@@ -21,7 +21,7 @@ type TemplateFileUpload = Pick<UploadFileArgs, 'file' | 'fileName'>
  * Arguments for exporting a project as a CSV file.
  * @see https://developer.todoist.com/api/v1/#tag/Templates/operation/export_as_file_api_v1_templates_file_get
  */
-export type ExportProjectAsCSVArgs = {
+export type ExportProjectAsCsvArgs = {
     /** The project ID to export. */
     projectId: string
     /** Whether to use relative dates in the export. */
@@ -51,7 +51,7 @@ export type ExportTemplateUrlResponse = {
  * Arguments for creating a project from a CSV file.
  * @see https://developer.todoist.com/api/v1/#tag/Projects/operation/create_project_from_csv_api_v1_projects_import_post
  */
-export type AddProjectFromCSVArgs = TemplateFileUpload & {
+export type AddProjectFromCsvArgs = TemplateFileUpload & {
     /** Name for the new project. */
     name: string
     /** Optional workspace ID. */
@@ -61,7 +61,7 @@ export type AddProjectFromCSVArgs = TemplateFileUpload & {
 /**
  * Response from creating a project from a CSV file.
  */
-export type AddProjectFromCSVResponse = {
+export type AddProjectFromCsvResponse = {
     status: string
     projectId: string
     templateType: string
@@ -75,7 +75,7 @@ export type AddProjectFromCSVResponse = {
  * Arguments for importing a CSV file into an existing project.
  * @see https://developer.todoist.com/api/v1/#tag/Projects/operation/import_project_csv_api_v1_projects__project_id__import_post
  */
-export type ImportCSVIntoProjectArgs = TemplateFileUpload & {
+export type ImportCsvIntoProjectArgs = TemplateFileUpload & {
     /** The project ID to import into. */
     projectId: string
 }

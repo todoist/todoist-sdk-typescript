@@ -54,7 +54,7 @@ describe('TodoistApi template endpoints', () => {
         vi.clearAllMocks()
     })
 
-    describe('exportProjectAsCSV', () => {
+    describe('exportProjectAsCsv', () => {
         test('returns file content from rest client', async () => {
             server.use(
                 http.get(`${getSyncBaseUri()}templates/file`, () => {
@@ -65,7 +65,7 @@ describe('TodoistApi template endpoints', () => {
             )
             const api = getTarget()
 
-            const result = await api.exportProjectAsCSV({ projectId: '123' })
+            const result = await api.exportProjectAsCsv({ projectId: '123' })
 
             expect(result).toBe('task,priority\nBuy milk,4')
         })
@@ -93,7 +93,7 @@ describe('TodoistApi template endpoints', () => {
         })
     })
 
-    describe('addProjectFromCSV', () => {
+    describe('addProjectFromCsv', () => {
         test('uploads file and returns validated response', async () => {
             mockedUploadMultipartFile.mockResolvedValue({
                 status: 'ok',
@@ -106,7 +106,7 @@ describe('TodoistApi template endpoints', () => {
             })
 
             const api = getTarget()
-            const result = await api.addProjectFromCSV({
+            const result = await api.addProjectFromCsv({
                 name: 'New Project',
                 file: Buffer.from('template content'),
                 fileName: 'template.csv',
@@ -135,7 +135,7 @@ describe('TodoistApi template endpoints', () => {
             })
 
             const api = getTarget()
-            await api.addProjectFromCSV({
+            await api.addProjectFromCsv({
                 name: 'Workspace Project',
                 file: Buffer.from('content'),
                 fileName: 'template.csv',
@@ -150,7 +150,7 @@ describe('TodoistApi template endpoints', () => {
         })
     })
 
-    describe('importCSVIntoProject', () => {
+    describe('importCsvIntoProject', () => {
         test('uploads file and returns validated response', async () => {
             mockedUploadMultipartFile.mockResolvedValue({
                 status: 'ok',
@@ -162,7 +162,7 @@ describe('TodoistApi template endpoints', () => {
             })
 
             const api = getTarget()
-            const result = await api.importCSVIntoProject({
+            const result = await api.importCsvIntoProject({
                 projectId: 'proj_123',
                 file: Buffer.from('template content'),
                 fileName: 'template.csv',
@@ -182,7 +182,7 @@ describe('TodoistApi template endpoints', () => {
             const api = getTarget()
 
             await expect(
-                api.importCSVIntoProject({ projectId: '', file: Buffer.from('content') }),
+                api.importCsvIntoProject({ projectId: '', file: Buffer.from('content') }),
             ).rejects.toThrow()
             expect(mockedUploadMultipartFile).not.toHaveBeenCalled()
         })

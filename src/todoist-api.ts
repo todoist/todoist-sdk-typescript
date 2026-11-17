@@ -164,11 +164,11 @@ import {
     GetAllCompletedTasksResponse,
 } from './types/tasks'
 import {
-    ExportProjectAsCSVArgs,
+    ExportProjectAsCsvArgs,
     ExportTemplateUrlArgs,
     ExportTemplateUrlResponse,
-    AddProjectFromCSVArgs,
-    AddProjectFromCSVResponse,
+    AddProjectFromCsvArgs,
+    AddProjectFromCsvResponse,
     AddProjectFromTemplateIdArgs,
     AddProjectFromTemplateIdResponse,
     SaveProjectAsTemplateArgs,
@@ -185,7 +185,7 @@ import {
     GetTemplatesResponse,
     Template,
     TemplateCategory,
-    ImportCSVIntoProjectArgs,
+    ImportCsvIntoProjectArgs,
     ImportTemplateFromIdArgs,
     ImportTemplateResponse,
 } from './types/templates'
@@ -1696,8 +1696,8 @@ export class TodoistApi {
      * @param args - Arguments including project ID and optional date format preference.
      * @returns A promise that resolves to the CSV content as a string.
      */
-    async exportProjectAsCSV(args: ExportProjectAsCSVArgs): Promise<string> {
-        return this.templateClient.exportProjectAsCSV(args)
+    async exportProjectAsCsv(args: ExportProjectAsCsvArgs): Promise<string> {
+        return this.templateClient.exportProjectAsCsv(args)
     }
 
     /**
@@ -1717,11 +1717,11 @@ export class TodoistApi {
      * @param requestId - Optional custom identifier for the request.
      * @returns A promise that resolves to the created project data.
      */
-    async addProjectFromCSV(
-        args: AddProjectFromCSVArgs,
+    async addProjectFromCsv(
+        args: AddProjectFromCsvArgs,
         requestId?: string,
-    ): Promise<AddProjectFromCSVResponse> {
-        return this.templateClient.addProjectFromCSV(args, requestId)
+    ): Promise<AddProjectFromCsvResponse> {
+        return this.templateClient.addProjectFromCsv(args, requestId)
     }
 
     /**
@@ -1896,11 +1896,11 @@ export class TodoistApi {
      * @param requestId - Optional custom identifier for the request.
      * @returns A promise that resolves to the import result.
      */
-    async importCSVIntoProject(
-        args: ImportCSVIntoProjectArgs,
+    async importCsvIntoProject(
+        args: ImportCsvIntoProjectArgs,
         requestId?: string,
     ): Promise<ImportTemplateResponse> {
-        return this.templateClient.importCSVIntoProject(args, requestId)
+        return this.templateClient.importCsvIntoProject(args, requestId)
     }
 
     /**

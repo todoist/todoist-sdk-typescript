@@ -18,10 +18,10 @@ import {
 import { request } from '../transport/http-client'
 import { TodoistArgumentError } from '../types/errors'
 import type {
-    AddProjectFromCSVArgs,
+    AddProjectFromCsvArgs,
     AddProjectFromTemplateIdArgs,
     AddProjectFromTemplateIdResponse,
-    AddProjectFromCSVResponse,
+    AddProjectFromCsvResponse,
     SaveProjectAsTemplateArgs,
     TemplateContent,
     TemplateContentResponse,
@@ -32,11 +32,11 @@ import type {
     GetTemplatesArgs,
     GetTemplatesByIdsArgs,
     GetTemplatesResponse,
-    ExportProjectAsCSVArgs,
+    ExportProjectAsCsvArgs,
     ExportTemplateUrlArgs,
     ExportTemplateUrlResponse,
     ImportTemplateFromIdArgs,
-    ImportCSVIntoProjectArgs,
+    ImportCsvIntoProjectArgs,
     ImportTemplateResponse,
     PreviewTemplateFromCsvArgs,
     UpdateTemplateArgs,
@@ -73,7 +73,7 @@ export class TemplateClient extends BaseClient {
         return getTemplatesBaseUri(this.syncApiBase)
     }
 
-    async exportProjectAsCSV(args: ExportProjectAsCSVArgs): Promise<string> {
+    async exportProjectAsCsv(args: ExportProjectAsCsvArgs): Promise<string> {
         const response = await request<string>({
             httpMethod: 'GET',
             baseUri: this.syncApiBase,
@@ -99,10 +99,10 @@ export class TemplateClient extends BaseClient {
         return data
     }
 
-    async addProjectFromCSV(
-        args: AddProjectFromCSVArgs,
+    async addProjectFromCsv(
+        args: AddProjectFromCsvArgs,
         requestId?: string,
-    ): Promise<AddProjectFromCSVResponse> {
+    ): Promise<AddProjectFromCsvResponse> {
         const { file, fileName, name, workspaceId } = args
         const additionalFields: Record<string, string> = { name }
         if (workspaceId !== undefined && workspaceId !== null) {
@@ -122,11 +122,11 @@ export class TemplateClient extends BaseClient {
         })
         return this.validateTemplateResponse(
             data as Record<string, unknown>,
-        ) as AddProjectFromCSVResponse
+        ) as AddProjectFromCsvResponse
     }
 
-    async importCSVIntoProject(
-        args: ImportCSVIntoProjectArgs,
+    async importCsvIntoProject(
+        args: ImportCsvIntoProjectArgs,
         requestId?: string,
     ): Promise<ImportTemplateResponse> {
         const { file, fileName, projectId } = args
