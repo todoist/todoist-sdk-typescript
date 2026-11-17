@@ -74,6 +74,12 @@ describe('Sync resource schemas', () => {
             expect(result.status?.effects.pauseNotifications?.scope?.mode).toBe('all')
         })
 
+        test('parses an emoji-only status with a null message', () => {
+            const status = { message: null, emoji: '🎯', effects: {} }
+            const result = CollaboratorSchema.parse({ ...validCollaborator, status })
+            expect(result.status).toEqual(status)
+        })
+
         test('preserves unknown fields via passthrough', () => {
             const withExtra = { ...validCollaborator, avatarUrl: 'http://example.com/img.png' }
             const result = CollaboratorSchema.parse(withExtra)
@@ -774,9 +780,17 @@ describe('Sync resource schemas', () => {
                 expect(result.status?.effects).toEqual({})
             })
 
-            test('rejects a status without a message', () => {
+            test.each([
+                ['null', { message: null, emoji: '🎯', effects: {} }],
+                ['absent', { emoji: '🎯', effects: {} }],
+            ])('parses an emoji-only status whose message is %s', (_label, emojiOnly) => {
+                const result = SyncUserSchema.parse({ ...validUser, status: emojiOnly })
+                expect(result.status).toEqual(emojiOnly)
+            })
+
+            test('rejects a status whose message is not text', () => {
                 expect(() =>
-                    SyncUserSchema.parse({ ...validUser, status: { effects: {} } }),
+                    SyncUserSchema.parse({ ...validUser, status: { message: 42, effects: {} } }),
                 ).toThrow(ZodError)
             })
 

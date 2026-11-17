@@ -4,10 +4,13 @@ export type UserStatusEffectArgs = {
     scope?: { mode?: string }
 }
 
-/** Only supplied fields change. Null removes optional fields and effects. */
+/**
+ * Only supplied fields change. Null removes optional fields and effects. A status needs a
+ * message, an emoji or both, so the API rejects a call that would leave it with neither.
+ */
 export type UserStatusArgs = {
-    /** Required when creating a status; omit to preserve the existing message. */
-    message?: string
+    /** 1 to 80 characters. Null removes it, leaving an emoji-only status; omission preserves it. */
+    message?: string | null
     emoji?: string | null
     /** Must be in the future; null removes expiry, omission preserves it. Dates are sent as ISO strings. */
     activeUntil?: Date | string | null

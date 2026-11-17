@@ -20,6 +20,44 @@ async function sendUserUpdate(args: UserUpdateArgs) {
     return body.commands[0].args
 }
 
+// A status can be only an emoji. The API stores one with message: null and returns it that way,
+// for the user and for every collaborator who shares a project with them.
+describe('reading an emoji-only status', () => {
+    test.each([
+        ['null', { message: null }],
+        ['absent', {}],
+    ])('parses a collaborator whose status message is %s', async (_label, message) => {
+        mockApiResponse({
+            endpoint: `${getSyncBaseUri()}${ENDPOINT_SYNC}`,
+            data: {
+                sync_token: 'token',
+                full_sync: true,
+                collaborators: [
+                    {
+                        id: '1',
+                        email: 'ada@example.com',
+                        full_name: 'Ada',
+                        timezone: 'UTC',
+                        image_id: null,
+                        status: { ...message, emoji: '🧪', active_until: null, effects: {} },
+                    },
+                ],
+            },
+            options: { method: 'POST' },
+        })
+        const api = new TodoistApi(DEFAULT_AUTH_TOKEN)
+
+        const response = await api.sync({ resourceTypes: ['collaborators'], syncToken: '*' })
+
+        expect(response.collaborators?.[0].status).toEqual({
+            ...message,
+            emoji: '🧪',
+            activeUntil: null,
+            effects: {},
+        })
+    })
+})
+
 describe('user_update status serialization', () => {
     test('sends a Date activeUntil as an ISO string', async () => {
         const args = await sendUserUpdate({
@@ -77,6 +115,10 @@ describe('user_update status serialization', () => {
             expected: { effects: { pause_notifications: {}, pause_activity: null } },
         },
         { status: { effects: null }, expected: { effects: null } },
+        {
+            status: { message: null, emoji: '🎯' },
+            expected: { message: null, emoji: '🎯' },
+        },
         {
             status: { effects: { pauseNotifications: { scope: {} } } },
             expected: { effects: { pause_notifications: { scope: {} } } },

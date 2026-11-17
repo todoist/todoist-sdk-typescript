@@ -19,10 +19,11 @@ export type UserStatusEffects = z.infer<typeof UserStatusEffectsSchema>
 
 /**
  * A user's status, shared across Todoist and Comms. The API returns `null` in its place
- * when the user has no status or it has expired.
+ * when the user has no status or it has expired. A status has a message, an emoji or both;
+ * one that is only an emoji has a `null` message.
  */
 export const UserStatusSchema = z.looseObject({
-    message: z.string(),
+    message: z.string().nullish(),
     emoji: z.string().nullish(),
     activeUntil: z.coerce.date().nullish(),
     effects: UserStatusEffectsSchema.default({}),
