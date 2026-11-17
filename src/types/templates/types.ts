@@ -94,9 +94,9 @@ export const TemplateContentDateSchema = z
     })
 /**
  * A due date or deadline in template content: either a complete date object (`date`, with
- * `string`, `isRecurring` and `timezone` for dues), as `previewProjectAsTemplate` returns it, or
- * just the text, e.g. `{ string: "every monday" }`. Fields the SDK doesn't know are kept, so
- * content read with `previewProjectAsTemplate` can be sent back without losing them.
+ * `string`, `isRecurring` and `timezone` for dues), as `previewProjectAsTemplate` and
+ * `getTemplateContent` return it, or just the text, e.g. `{ string: "every monday" }`. Fields the
+ * SDK doesn't know are kept, so content read with either can be sent back without losing them.
  */
 export type TemplateContentDate = z.infer<typeof TemplateContentDateSchema>
 
@@ -163,7 +163,8 @@ export const TemplateContentSchema = z.object({
     projectViewOptionsDefaults: z.array(z.looseObject({})),
 })
 /**
- * The full content of a project template, in the shape `saveProjectAsTemplate` accepts back.
+ * The full content of a project template, in the shape `saveProjectAsTemplate` and
+ * `updateTemplate` accept back.
  * Tasks keep the order they appear in.
  */
 export type TemplateContent = z.infer<typeof TemplateContentSchema>
