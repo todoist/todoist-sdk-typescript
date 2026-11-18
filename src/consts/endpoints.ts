@@ -10,18 +10,16 @@ export const API_VERSION = 'v1'
 
 export const API_BASE_URI = `/api/${API_VERSION}/`
 
-// Saved-template routes use API v1.6, as the Todoist web app does. It is the first version that
-// keeps due dates' type, time and timezone when saving template content and project exports.
-export const TEMPLATES_API_VERSION = 'v1.6'
 const API_AUTHORIZATION_BASE_URI = '/oauth/'
 
 export function getSyncBaseUri(domainBase: string = BASE_URI): string {
     return new URL(API_BASE_URI, domainBase).toString()
 }
 
-/** Base URI for the saved-template routes, on `TEMPLATES_API_VERSION`. */
+// Saved-template routes use API v1.6, as the Todoist web app does. It is the first version that
+// keeps due dates' type, time and timezone when saving template content and project exports.
 export function getTemplatesBaseUri(domainBase: string = BASE_URI): string {
-    return new URL(`/api/${TEMPLATES_API_VERSION}/`, domainBase).toString()
+    return new URL('/api/v1.6/', domainBase).toString()
 }
 
 export function getApiRootBaseUri(domainBase: string = BASE_URI): string {

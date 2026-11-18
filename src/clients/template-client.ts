@@ -47,7 +47,6 @@ import { BaseClient } from './base-client'
  * JSDoc.
  */
 export class TemplateClient extends BaseClient {
-    /** Base URI for saved-template routes, on `TEMPLATES_API_VERSION`. */
     private get templatesApiBase(): string {
         return getTemplatesBaseUri(this.syncApiBase)
     }
@@ -206,7 +205,6 @@ export class TemplateClient extends BaseClient {
     }
 }
 
-/** Turns template content back into the sync names the API expects. */
 function toApiTemplateContent({ tasks, comments, projectComments, ...rest }: TemplateContent) {
     return {
         ...rest,

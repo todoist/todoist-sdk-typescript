@@ -76,7 +76,6 @@ export const TemplateSchema = z.object({
  */
 export type Template = z.infer<typeof TemplateSchema>
 
-/** Response from creating a new project from a template ID. */
 export const AddProjectFromTemplateIdResponseSchema = z.object({
     status: z.string(),
     projectId: z.string(),
@@ -180,7 +179,6 @@ export const TemplateContentResponseSchema = z
         projectNotes: z.array(TemplateContentProjectCommentSchema),
         projectViewOptionsDefaults: z.array(z.looseObject({})).optional(),
     })
-    // The API uses sync names for tasks and comments; rename them to match the rest of the SDK.
     .transform(({ templateType, workspaceId, items, notes, projectNotes, ...rest }) => ({
         templateType,
         workspaceId: workspaceId ?? null,
