@@ -250,7 +250,15 @@ export class TemplateClient extends BaseClient {
             // objects that the update accepts back unchanged.
             payload: args,
         })
-        return validateTemplateContentResponse(data)
+        const response = validateTemplateContentResponse(data)
+        if (response.templateType !== 'project') {
+            // Template content describes one project. Reading a setup template into it would drop
+            // its other projects, the links from sections and tasks to them, and its labels.
+            throw new TodoistArgumentError(
+                `${templateId} is a ${response.templateType} template. getTemplateContent only reads project templates.`,
+            )
+        }
+        return response
     }
 
     async updateTemplate(

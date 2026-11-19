@@ -1823,6 +1823,9 @@ export class TodoistApi {
      * `updateTemplate` accepts back unchanged. To edit a saved template's content, read it with
      * this method, change it, and pass it to `updateTemplate` as `content`.
      *
+     * Only project templates can be read. Setup templates, which create several projects and
+     * labels, are rejected with a `TodoistArgumentError`.
+     *
      * @param templateId - A curated slug or a `UT_` template ID.
      * @param args - Optional locale.
      * @returns A promise that resolves to the template's type, workspace and content.

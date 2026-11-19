@@ -8,6 +8,7 @@ import {
     DEFAULT_SECTION,
     DEFAULT_TASK,
 } from './test-utils/test-defaults'
+import { TodoistArgumentError } from './types/errors'
 import { camelCaseKeys } from './utils/case-conversion'
 import { uploadMultipartFile } from './utils/multipart-upload'
 
@@ -835,6 +836,28 @@ describe('TodoistApi template endpoints', () => {
                     fileAttachment: null,
                 },
             ])
+        })
+
+        test('rejects a setup template rather than drop its other projects and labels', async () => {
+            server.use(
+                http.get(`${getTemplatesBaseUri()}templates/morning-routine/preview`, () =>
+                    HttpResponse.json({
+                        ...RAW_CONTENT,
+                        template_type: 'setup',
+                        workspace_id: null,
+                        projects: [
+                            { id: 'p1', name: 'Work', view_style: 'list' },
+                            { id: 'p2', name: 'Life', view_style: 'list' },
+                        ],
+                        labels: [{ id: '1', name: 'admin', color: 'grey' }],
+                    }),
+                ),
+            )
+            const api = getTarget()
+
+            await expect(api.getTemplateContent('morning-routine')).rejects.toThrow(
+                TodoistArgumentError,
+            )
         })
 
         test('sends content read with getTemplateContent back to the API unchanged', async () => {
