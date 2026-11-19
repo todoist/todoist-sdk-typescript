@@ -8,6 +8,7 @@ import {
     DEFAULT_SECTION,
     DEFAULT_TASK,
 } from './test-utils/test-defaults'
+import { camelCaseKeys } from './utils/case-conversion'
 import { uploadMultipartFile } from './utils/multipart-upload'
 
 // Mock the multipart upload helper
@@ -547,10 +548,18 @@ describe('TodoistApi template endpoints', () => {
             expect(result.name).toBe('Renamed')
         })
 
-        test('rejects an empty template ID before making a request', async () => {
+        test('rejects a temporary template ID before making a request', async () => {
+            let called = false
+            server.use(
+                http.all(`${getTemplatesBaseUri()}templates/*`, () => {
+                    called = true
+                    return HttpResponse.json(RAW_TEMPLATE)
+                }),
+            )
             const api = getTarget()
 
-            await expect(api.updateTemplate('', { name: 'x' })).rejects.toThrow()
+            await expect(api.updateTemplate('tmp-1', { name: 'x' })).rejects.toThrow()
+            expect(called).toBe(false)
         })
     })
 
@@ -598,22 +607,7 @@ describe('TodoistApi template endpoints', () => {
 
     describe('addTemplate', () => {
         test('uploads a file with the template fields as form fields', async () => {
-            mockedUploadMultipartFile.mockResolvedValue({
-                ...RAW_TEMPLATE,
-                templateType: 'project',
-                templateSource: 'user',
-                shortDescription: '',
-                longDescription: '',
-                thumbnailImage: null,
-                thumbnailImageDark: null,
-                coverImage: null,
-                previewImage: null,
-                templateColor: null,
-                backgroundColor: null,
-                backgroundColorDark: null,
-                moreResources: [],
-                categoryIds: [],
-            })
+            mockedUploadMultipartFile.mockResolvedValue(camelCaseKeys(RAW_TEMPLATE))
             const api = getTarget()
 
             const result = await api.addTemplate({
@@ -628,6 +622,7 @@ describe('TodoistApi template endpoints', () => {
                 expect.objectContaining({
                     baseUrl: getTemplatesBaseUri(),
                     endpoint: 'templates/user/import',
+                    fileName: 'weekly.csv',
                     additionalFields: {
                         template_type: 'project',
                         name: 'Weekly',
