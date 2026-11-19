@@ -790,17 +790,21 @@ describe('TodoistApi template endpoints', () => {
 
         test('reads on API v1.6 with full date objects, in the shape updateTemplate takes', async () => {
             let resolveDates: string | null | undefined
+            let locale: string | null | undefined
             server.use(
                 http.get(`${getTemplatesBaseUri()}templates/UT_1/preview`, ({ request }) => {
-                    resolveDates = new URL(request.url).searchParams.get('resolve_dates')
+                    const { searchParams } = new URL(request.url)
+                    resolveDates = searchParams.get('resolve_dates')
+                    locale = searchParams.get('locale')
                     return HttpResponse.json(RAW_CONTENT)
                 }),
             )
             const api = getTarget()
 
-            const result = await api.getTemplateContent('UT_1')
+            const result = await api.getTemplateContent('UT_1', { locale: 'fr' })
 
             expect(resolveDates).toBeNull()
+            expect(locale).toBe('fr')
             expect(result.templateType).toBe('project')
             expect(result.workspaceId).toBe('486413')
             expect(result.content.projects).toEqual([
