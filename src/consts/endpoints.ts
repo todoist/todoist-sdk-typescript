@@ -83,6 +83,7 @@ export const ENDPOINT_REST_TEMPLATES_CATEGORIES = 'templates/categories'
 export const ENDPOINT_REST_TEMPLATES_USER = 'templates/user'
 export const ENDPOINT_REST_TEMPLATES_USER_PREVIEW = 'templates/user/preview'
 export const ENDPOINT_REST_TEMPLATES_USER_IMPORT = 'templates/user/import'
+export const TEMPLATE_PREVIEW = 'preview'
 export const ENDPOINT_REST_PROJECTS_FROM_TEMPLATE = ENDPOINT_REST_PROJECTS + '/from_template'
 
 export const ENDPOINT_REST_ACCESS_TOKENS_MIGRATE = 'access_tokens/migrate_personal_token'

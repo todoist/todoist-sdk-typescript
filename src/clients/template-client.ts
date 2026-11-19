@@ -12,6 +12,7 @@ import {
     ENDPOINT_REST_TEMPLATES_USER_IMPORT,
     ENDPOINT_REST_TEMPLATES_USER_PREVIEW,
     ENDPOINT_REST_PROJECTS_FROM_TEMPLATE,
+    TEMPLATE_PREVIEW,
 } from '../consts/endpoints'
 import { request } from '../transport/http-client'
 import { TodoistArgumentError } from '../types/errors'
@@ -241,7 +242,7 @@ export class TemplateClient extends BaseClient {
         const { data } = await request<unknown>({
             httpMethod: 'GET',
             baseUri: this.templatesApiBase,
-            relativePath: generatePath(ENDPOINT_REST_TEMPLATES, templateId, 'preview'),
+            relativePath: generatePath(ENDPOINT_REST_TEMPLATES, templateId, TEMPLATE_PREVIEW),
             apiToken: this.authToken,
             customFetch: this.customFetch,
             customHeaders: this.customHeaders,
