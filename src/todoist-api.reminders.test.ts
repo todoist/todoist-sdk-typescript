@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { TodoistApi } from '.'
 import {
     ENDPOINT_REST_LOCATION_REMINDERS,
@@ -473,5 +474,36 @@ describe('TodoistApi reminder endpoints', () => {
             expect(results).toHaveLength(1)
             expect(nextCursor).toBeNull()
         })
+    })
+
+    describe('reminder ID validation', () => {
+        const methods: [string, (api: TodoistApi, id: string) => Promise<unknown>][] = [
+            ['getReminder', (api, id) => api.getReminder(id)],
+            ['getLocationReminder', (api, id) => api.getLocationReminder(id)],
+            [
+                'updateReminder',
+                (api, id) => api.updateReminder(id, { reminderType: 'relative', minuteOffset: 15 }),
+            ],
+            ['updateLocationReminder', (api, id) => api.updateLocationReminder(id, { name: 'X' })],
+            ['deleteReminder', (api, id) => api.deleteReminder(id)],
+            ['deleteLocationReminder', (api, id) => api.deleteLocationReminder(id)],
+        ]
+        test.each(methods)(
+            '%s rejects a tmp- placeholder ID without sending a request',
+            async (_name, call) => {
+                const onRequest = vi.fn()
+                server.use(
+                    http.all('*', ({ request }) => {
+                        onRequest(request.url)
+                        return HttpResponse.json({}, { status: 200 })
+                    }),
+                )
+
+                await expect(call(getTarget(), 'tmp-abc-123')).rejects.toThrow(
+                    /client-side placeholder/,
+                )
+                expect(onRequest).not.toHaveBeenCalled()
+            },
+        )
     })
 })

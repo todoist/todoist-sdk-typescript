@@ -12,14 +12,11 @@ import type {
     UpdateLocationReminderArgs,
     UpdateReminderArgs,
 } from '../types/reminders'
-import {
-    ReminderIdSchema,
-    UpdateLocationReminderArgsSchema,
-    UpdateReminderArgsSchema,
-} from '../types/reminders'
+import { UpdateLocationReminderArgsSchema, UpdateReminderArgsSchema } from '../types/reminders'
 import { ReminderTypeEnum } from '../types/sync/resources/reminders'
 import { generatePath } from '../utils/request-helpers'
 import {
+    IdSchema,
     validateLocationReminderArray,
     validateReminder,
     validateReminderArray,
@@ -76,7 +73,7 @@ export class ReminderClient extends BaseClient {
     }
 
     async getReminder(id: string): Promise<Reminder> {
-        ReminderIdSchema.parse(id)
+        IdSchema.parse(id)
         try {
             const response = await request<Reminder>({
                 httpMethod: 'GET',
@@ -100,7 +97,7 @@ export class ReminderClient extends BaseClient {
     }
 
     async getLocationReminder(id: string): Promise<Reminder> {
-        ReminderIdSchema.parse(id)
+        IdSchema.parse(id)
         try {
             const response = await request<Reminder>({
                 httpMethod: 'GET',
@@ -164,7 +161,7 @@ export class ReminderClient extends BaseClient {
         args: UpdateReminderArgs,
         requestId?: string,
     ): Promise<Reminder> {
-        ReminderIdSchema.parse(id)
+        IdSchema.parse(id)
         const payload = UpdateReminderArgsSchema.parse(args)
         try {
             const response = await request<Reminder>({
@@ -195,7 +192,7 @@ export class ReminderClient extends BaseClient {
         args: UpdateLocationReminderArgs,
         requestId?: string,
     ): Promise<Reminder> {
-        ReminderIdSchema.parse(id)
+        IdSchema.parse(id)
         const payload = UpdateLocationReminderArgsSchema.parse(args)
         try {
             const response = await request<Reminder>({
@@ -222,7 +219,7 @@ export class ReminderClient extends BaseClient {
     }
 
     async deleteReminder(id: string, requestId?: string): Promise<boolean> {
-        ReminderIdSchema.parse(id)
+        IdSchema.parse(id)
         try {
             const response = await request({
                 httpMethod: 'DELETE',
@@ -246,7 +243,7 @@ export class ReminderClient extends BaseClient {
     }
 
     async deleteLocationReminder(id: string, requestId?: string): Promise<boolean> {
-        ReminderIdSchema.parse(id)
+        IdSchema.parse(id)
         try {
             const response = await request({
                 httpMethod: 'DELETE',

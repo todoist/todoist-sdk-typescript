@@ -10,8 +10,6 @@ export type ReminderDeliveryService = (typeof REMINDER_DELIVERY_SERVICES)[number
 
 export const ReminderDeliveryServiceSchema = z.enum(REMINDER_DELIVERY_SERVICES)
 
-export const ReminderIdSchema = z.string()
-
 export const ReminderDueDateSchema = DueDateSchema.pick({
     date: true,
     string: true,
