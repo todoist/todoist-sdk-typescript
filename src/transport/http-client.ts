@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from 'uuid'
-import { API_BASE_URI } from '../consts/endpoints'
 import { TodoistRequestError } from '../types/errors'
 import type { CustomFetch, CustomHeaders, HttpMethod, HttpResponse } from '../types/http'
 import { isHttpError, isNetworkError } from '../types/http'
 import { camelCaseKeys, snakeCaseKeys } from '../utils/case-conversion'
 import { mergeHeaders, resolveCustomHeaders } from '../utils/headers'
 import { fetchWithRetry } from './fetch-with-retry'
+
+const API_BASE_URI_PATTERN = /\/api\/v1(\.\d+)?\//
 
 type GetTodoistRequestErrorArgs = {
     error: Error
@@ -156,8 +157,8 @@ export async function request<T>(args: RequestArgs): Promise<HttpResponse<T>> {
 
     try {
         let requestId = initialRequestId
-        // Sync api don't allow a request id in the CORS
-        if (httpMethod === 'POST' && !requestId && !baseUri.includes(API_BASE_URI)) {
+        // The API's CORS doesn't allow a request id, on any version (/api/v1/, /api/v1.6/)
+        if (httpMethod === 'POST' && !requestId && !API_BASE_URI_PATTERN.test(baseUri)) {
             requestId = uuidv4()
         }
 

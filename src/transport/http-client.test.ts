@@ -103,6 +103,27 @@ describe('httpClient', () => {
         expect(capturedRequest?.headers['x-request-id']).toBe(RANDOM_ID)
     })
 
+    test.each(['https://api.todoist.com/api/v1/', 'https://api.todoist.com/api/v1.6/'])(
+        'POST to %s sends no automatic request id',
+        async (baseUri) => {
+            server.use(
+                http.post(`${baseUri}${DEFAULT_ENDPOINT}`, ({ request }) => {
+                    captureRequest({ request, body: undefined })
+                    return HttpResponse.json(DEFAULT_RESPONSE_DATA, { status: 200 })
+                }),
+            )
+
+            await request({
+                httpMethod: 'POST',
+                baseUri,
+                relativePath: DEFAULT_ENDPOINT,
+                apiToken: DEFAULT_AUTH_TOKEN,
+            })
+
+            expect(getLastRequest()?.headers['x-request-id']).toBeUndefined()
+        },
+    )
+
     test('paramsSerializer works correctly', () => {
         const params = {
             filter: 'today',
