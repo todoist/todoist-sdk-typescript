@@ -14,7 +14,7 @@ import { BaseClient } from './base-client'
  */
 export class IdMappingClient extends BaseClient {
     async getIdMappings(args: GetIdMappingsArgs): Promise<IdMapping[]> {
-        for (const id of args.objIds) IdSchema.parse(id)
+        IdSchema.array().parse(args.objIds)
         const response = await request<unknown[]>({
             httpMethod: 'GET',
             baseUri: this.syncApiBase,
