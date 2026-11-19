@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { getApiRootBaseUri, getAppWebhookEndpoint } from './consts/endpoints'
 import { server, http, HttpResponse } from './test-utils/msw-setup'
 import { DEFAULT_AUTH_TOKEN, DEFAULT_APP_ID, DEFAULT_APP_WEBHOOK } from './test-utils/test-defaults'
@@ -71,6 +72,25 @@ describe('TodoistApi app webhook endpoints', () => {
                 events: ['e_item_added', 'e_item_completed'],
                 version: '1',
             })
+        })
+
+        test('rejects a tmp- placeholder app ID without sending a request', async () => {
+            const onRequest = vi.fn()
+            server.use(
+                http.all('*', ({ request }) => {
+                    onRequest(request.url)
+                    return HttpResponse.json({}, { status: 200 })
+                }),
+            )
+
+            await expect(
+                getTarget().updateAppWebhook({
+                    appId: 'tmp-abc-123',
+                    callbackUrl: 'https://example.com/webhook',
+                    events: ['item:added'],
+                }),
+            ).rejects.toThrow(/client-side placeholder/)
+            expect(onRequest).not.toHaveBeenCalled()
         })
     })
 

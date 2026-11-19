@@ -899,4 +899,68 @@ describe('TodoistApi workspaces', () => {
             expect(result).toEqual(true)
         })
     })
+
+    describe('path ID validation', () => {
+        const TMP_ID = 'tmp-abc-123'
+        const cases: [string, () => Promise<unknown>][] = [
+            [
+                'getWorkspaceUserTasks workspaceId',
+                () => api.getWorkspaceUserTasks({ workspaceId: TMP_ID, userId: '456' }),
+            ],
+            [
+                'getWorkspaceUserTasks userId',
+                () => api.getWorkspaceUserTasks({ workspaceId: '123', userId: TMP_ID }),
+            ],
+            [
+                'inviteWorkspaceUsers workspaceId',
+                () =>
+                    api.inviteWorkspaceUsers({
+                        workspaceId: TMP_ID,
+                        emailList: ['user1@example.com'],
+                    }),
+            ],
+            [
+                'updateWorkspaceUser workspaceId',
+                () =>
+                    api.updateWorkspaceUser({ workspaceId: TMP_ID, userId: '456', role: 'ADMIN' }),
+            ],
+            [
+                'updateWorkspaceUser userId',
+                () =>
+                    api.updateWorkspaceUser({ workspaceId: '123', userId: TMP_ID, role: 'ADMIN' }),
+            ],
+            [
+                'removeWorkspaceUser workspaceId',
+                () => api.removeWorkspaceUser({ workspaceId: TMP_ID, userId: '456' }),
+            ],
+            [
+                'removeWorkspaceUser userId',
+                () => api.removeWorkspaceUser({ workspaceId: '123', userId: TMP_ID }),
+            ],
+            [
+                'getWorkspaceActiveProjects workspaceId',
+                () => api.getWorkspaceActiveProjects({ workspaceId: TMP_ID }),
+            ],
+            [
+                'getWorkspaceArchivedProjects workspaceId',
+                () => api.getWorkspaceArchivedProjects({ workspaceId: TMP_ID }),
+            ],
+        ]
+
+        test.each(cases)(
+            '%s rejects a tmp- placeholder ID without sending a request',
+            async (_name, call) => {
+                const onRequest = vi.fn()
+                server.use(
+                    http.all('*', ({ request }) => {
+                        onRequest(request.url)
+                        return HttpResponse.json({}, { status: 200 })
+                    }),
+                )
+
+                await expect(call()).rejects.toThrow(/client-side placeholder/)
+                expect(onRequest).not.toHaveBeenCalled()
+            },
+        )
+    })
 })

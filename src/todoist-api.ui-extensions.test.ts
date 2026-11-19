@@ -167,5 +167,16 @@ describe('TodoistApi UI extension endpoints', () => {
                 }),
             ).rejects.toThrow('Cannot upload empty image file')
         })
+
+        test('rejects a tmp- placeholder ID without uploading', async () => {
+            await expect(
+                getTarget().uploadUiExtensionIcon({
+                    uiExtensionId: 'tmp-abc-123',
+                    file: '/path/to/icon.png',
+                    fileName: 'icon.png',
+                }),
+            ).rejects.toThrow(/client-side placeholder/)
+            expect(mockedUploadMultipartFile).not.toHaveBeenCalled()
+        })
     })
 })

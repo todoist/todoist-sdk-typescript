@@ -84,6 +84,23 @@ function createValidator<T>(schema: ZodType<T>) {
 const TMP_ID_MESSAGE =
     'This looks like a client-side placeholder — wait for sync to complete before calling the API.'
 
+/**
+ * Checks an ID before it is put into a request's URL path.
+ *
+ * Every client method parses each ID it puts in the path with this schema,
+ * before the request is built: IDs passed as their own argument, IDs inside an
+ * args object, and each element of an ID list. It fails fast, with a clear
+ * message, on values the server would answer confusingly:
+ *
+ * - an empty string, which would address a different resource (the path
+ *   encoder, `encodePathSegment`, also refuses empty segments);
+ * - a `tmp-` ID, a client-side placeholder for an object that has not synced
+ *   yet, which the server rejects with an unhelpful error.
+ *
+ * IDs in a request body or query string are not checked: the server owns that
+ * validation and reports the field at fault. Don't use this for values that
+ * are not Todoist IDs, such as invite codes or distribution tokens.
+ */
 export const IdSchema = z
     .string()
     .min(1)

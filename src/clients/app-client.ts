@@ -322,6 +322,7 @@ export class AppClient extends BaseClient {
 
     async updateAppWebhook(args: UpdateAppWebhookArgs, requestId?: string): Promise<AppWebhook> {
         const { appId, events, ...rest } = args
+        IdSchema.parse(appId)
         const response = await request<AppWebhook>({
             httpMethod: 'POST',
             baseUri: this.apiRootBase,

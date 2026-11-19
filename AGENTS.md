@@ -103,3 +103,4 @@ This avoids duplicating string literals across multiple `z.literal()` calls and 
 ## Zod Schemas
 
 - **Export**: All Zod schemas should be exported
+- **Path IDs**: Parse every ID that goes into the URL path with `IdSchema` (`src/utils/validators.ts`) before the request, including IDs inside args objects. IDs in the body or query are left to the server. The reasons are in its JSDoc.

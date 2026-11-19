@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { ZodError } from 'zod'
 import { TodoistApi } from '.'
 import { getSyncBaseUri } from './consts/endpoints'
 import { server, http, HttpResponse } from './test-utils/msw-setup'
@@ -179,6 +180,31 @@ describe('TodoistApi ID mapping endpoints', () => {
             })
             expect(result[1].oldId).toBeNull()
         })
+
+        test.each([
+            [
+                'a tmp- placeholder ID',
+                ['6VfWjjjFg2xqX6Pa', 'tmp-abc-123'],
+                /client-side placeholder/,
+            ],
+            ['an empty ID', ['6VfWjjjFg2xqX6Pa', ''], ZodError],
+        ] as const)(
+            'rejects %s in objIds without sending a request',
+            async (_label, objIds, error) => {
+                const onRequest = vi.fn()
+                server.use(
+                    http.all('*', ({ request }) => {
+                        onRequest(request.url)
+                        return HttpResponse.json([], { status: 200 })
+                    }),
+                )
+
+                await expect(
+                    getTarget().getIdMappings({ objName: 'tasks', objIds: [...objIds] }),
+                ).rejects.toThrow(error)
+                expect(onRequest).not.toHaveBeenCalled()
+            },
+        )
     })
 
     describe('getMovedIds', () => {

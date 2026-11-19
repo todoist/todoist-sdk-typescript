@@ -116,6 +116,7 @@ export class UiExtensionClient extends BaseClient {
         args: UploadUiExtensionIconArgs,
         requestId?: string,
     ): Promise<UiExtension> {
+        IdSchema.parse(args.uiExtensionId)
         if (Buffer.isBuffer(args.file) && args.file.length === 0) {
             throw new Error('Cannot upload empty image file')
         }

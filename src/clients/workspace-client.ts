@@ -418,6 +418,8 @@ export class WorkspaceClient extends BaseClient {
         requestId?: string,
     ): Promise<GetWorkspaceUserTasksResponse> {
         const { workspaceId, userId, ...queryParams } = args
+        IdSchema.parse(workspaceId)
+        IdSchema.parse(userId)
         const { data } = await request<{ tasks: unknown[] }>({
             httpMethod: 'GET',
             baseUri: this.syncApiBase,
@@ -438,6 +440,7 @@ export class WorkspaceClient extends BaseClient {
         requestId?: string,
     ): Promise<InviteWorkspaceUsersResponse> {
         const { workspaceId, ...payload } = args
+        IdSchema.parse(workspaceId)
         const { data } = await request<InviteWorkspaceUsersResponse>({
             httpMethod: 'POST',
             baseUri: this.syncApiBase,
@@ -456,6 +459,8 @@ export class WorkspaceClient extends BaseClient {
         requestId?: string,
     ): Promise<JoinWorkspaceResult> {
         const { workspaceId, userId, ...payload } = args
+        IdSchema.parse(workspaceId)
+        IdSchema.parse(userId)
         const response = await request<JoinWorkspaceResult>({
             httpMethod: 'POST',
             baseUri: this.syncApiBase,
@@ -471,6 +476,8 @@ export class WorkspaceClient extends BaseClient {
 
     async removeWorkspaceUser(args: RemoveWorkspaceUserArgs, requestId?: string): Promise<boolean> {
         const { workspaceId, userId } = args
+        IdSchema.parse(workspaceId)
+        IdSchema.parse(userId)
         const response = await request({
             httpMethod: 'DELETE',
             baseUri: this.syncApiBase,
@@ -487,6 +494,7 @@ export class WorkspaceClient extends BaseClient {
         args: GetWorkspaceProjectsArgs,
         requestId?: string,
     ): Promise<GetWorkspaceProjectsResponse> {
+        IdSchema.parse(args.workspaceId)
         const queryParams: Record<string, string | number> = {}
         if (args.cursor) {
             queryParams.cursor = args.cursor
@@ -513,6 +521,7 @@ export class WorkspaceClient extends BaseClient {
         args: GetWorkspaceProjectsArgs,
         requestId?: string,
     ): Promise<GetWorkspaceProjectsResponse> {
+        IdSchema.parse(args.workspaceId)
         const queryParams: Record<string, string | number> = {}
         if (args.cursor) {
             queryParams.cursor = args.cursor

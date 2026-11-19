@@ -2,7 +2,7 @@ import { ENDPOINT_REST_ID_MAPPINGS, ENDPOINT_REST_MOVED_IDS } from '../consts/en
 import { request } from '../transport/http-client'
 import type { GetIdMappingsArgs, GetMovedIdsArgs, IdMapping, MovedId } from '../types/id-mappings'
 import { generatePath } from '../utils/request-helpers'
-import { validateIdMappingArray, validateMovedIdArray } from '../utils/validators'
+import { IdSchema, validateIdMappingArray, validateMovedIdArray } from '../utils/validators'
 import { BaseClient } from './base-client'
 
 /**
@@ -14,6 +14,7 @@ import { BaseClient } from './base-client'
  */
 export class IdMappingClient extends BaseClient {
     async getIdMappings(args: GetIdMappingsArgs): Promise<IdMapping[]> {
+        for (const id of args.objIds) IdSchema.parse(id)
         const response = await request<unknown[]>({
             httpMethod: 'GET',
             baseUri: this.syncApiBase,
