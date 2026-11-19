@@ -48,44 +48,6 @@ export const ProjectHealthSchema = z.object({
 /** Project health status. */
 export type ProjectHealth = z.infer<typeof ProjectHealthSchema>
 
-export const ProjectMetricsSchema = z.object({
-    totalTasks: z.number().int(),
-    completedTasks: z.number().int(),
-    overdueTasks: z.number().int(),
-    tasksCreatedThisWeek: z.number().int(),
-    tasksCompletedThisWeek: z.number().int(),
-    averageCompletionTime: z.number().nullable(),
-})
-/** Project metrics summary. */
-export type ProjectMetrics = z.infer<typeof ProjectMetricsSchema>
-
-export const TaskContextSchema = z.object({
-    id: z.string(),
-    content: z.string(),
-    due: z.string().nullable().optional(),
-    deadline: z.string().nullable().optional(),
-    priority: z.string(),
-    isCompleted: z.boolean(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
-    completedAt: z.coerce.date().nullable(),
-    completedByUid: z.string().nullable(),
-    labels: z.array(z.string()),
-})
-/** Task context used in health analysis. */
-export type TaskContext = z.infer<typeof TaskContextSchema>
-
-export const ProjectHealthContextSchema = z.object({
-    projectId: z.string(),
-    projectName: z.string(),
-    projectDescription: z.string().nullable(),
-    projectMetrics: ProjectMetricsSchema,
-    tasks: z.array(TaskContextSchema),
-    language: z.string().nullable().optional(),
-})
-/** Full project context for health analysis. */
-export type ProjectHealthContext = z.infer<typeof ProjectHealthContextSchema>
-
 export const ProjectProgressSchema = z.object({
     projectId: z.string(),
     completedCount: z.number().int(),

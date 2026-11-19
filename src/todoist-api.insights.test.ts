@@ -92,51 +92,6 @@ describe('TodoistApi insights endpoints', () => {
         })
     })
 
-    describe('getProjectHealthContext', () => {
-        test('returns health context from rest client', async () => {
-            const mockResponse = {
-                project_id: '123',
-                project_name: 'My Project',
-                project_description: null,
-                project_metrics: {
-                    total_tasks: 10,
-                    completed_tasks: 5,
-                    overdue_tasks: 2,
-                    tasks_created_this_week: 3,
-                    tasks_completed_this_week: 1,
-                    average_completion_time: 2.5,
-                },
-                tasks: [
-                    {
-                        id: '1',
-                        content: 'Task 1',
-                        due: null,
-                        deadline: null,
-                        priority: '4',
-                        is_completed: false,
-                        created_at: '2025-01-01T00:00:00Z',
-                        updated_at: '2025-01-10T00:00:00Z',
-                        completed_at: null,
-                        completed_by_uid: null,
-                        labels: ['work'],
-                    },
-                ],
-            }
-            server.use(
-                http.get(`${getSyncBaseUri()}projects/123/insights/health/context`, () => {
-                    return HttpResponse.json(mockResponse, { status: 200 })
-                }),
-            )
-            const api = getTarget()
-
-            const result = await api.getProjectHealthContext('123')
-
-            expect(result.projectId).toBe('123')
-            expect(result.projectMetrics.totalTasks).toBe(10)
-            expect(result.tasks).toHaveLength(1)
-        })
-    })
-
     describe('getProjectProgress', () => {
         test('returns progress from rest client', async () => {
             const mockResponse = {

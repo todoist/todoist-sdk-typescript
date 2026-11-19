@@ -25,7 +25,6 @@ import { IdMappingSchema, MovedIdSchema } from '../types/id-mappings/types'
 import {
     ProjectActivityStatsSchema,
     ProjectHealthSchema,
-    ProjectHealthContextSchema,
     ProjectProgressSchema,
     WorkspaceInsightsSchema,
 } from '../types/insights/types'
@@ -179,9 +178,6 @@ export const { validate: validateProjectActivityStats } = createValidator(
     ProjectActivityStatsSchema,
 )
 export const { validate: validateProjectHealth } = createValidator(ProjectHealthSchema)
-export const { validate: validateProjectHealthContext } = createValidator(
-    ProjectHealthContextSchema,
-)
 export const { validate: validateProjectProgress } = createValidator(ProjectProgressSchema)
 export const { validate: validateWorkspaceInsights } = createValidator(WorkspaceInsightsSchema)
 

@@ -81,7 +81,6 @@ import { IdMapping, MovedId, GetIdMappingsArgs, GetMovedIdsArgs } from './types/
 import {
     ProjectActivityStats,
     ProjectHealth,
-    ProjectHealthContext,
     ProjectProgress,
     WorkspaceInsights,
     GetProjectActivityStatsArgs,
@@ -857,16 +856,6 @@ export class TodoistApi {
      */
     async getProjectHealth(projectId: string): Promise<ProjectHealth> {
         return this.insightsClient.getProjectHealth(projectId)
-    }
-
-    /**
-     * Retrieves the health context for a project, including metrics and task details.
-     *
-     * @param projectId - The unique identifier of the project.
-     * @returns A promise that resolves to the project health context.
-     */
-    async getProjectHealthContext(projectId: string): Promise<ProjectHealthContext> {
-        return this.insightsClient.getProjectHealthContext(projectId)
     }
 
     /**

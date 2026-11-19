@@ -1,7 +1,6 @@
 import {
     getProjectInsightsActivityStatsEndpoint,
     getProjectInsightsHealthAnalyzeEndpoint,
-    getProjectInsightsHealthContextEndpoint,
     getProjectInsightsHealthEndpoint,
     getProjectInsightsProgressEndpoint,
     getWorkspaceInsightsEndpoint,
@@ -12,7 +11,6 @@ import type {
     GetWorkspaceInsightsArgs,
     ProjectActivityStats,
     ProjectHealth,
-    ProjectHealthContext,
     ProjectProgress,
     WorkspaceInsights,
 } from '../types/insights'
@@ -20,7 +18,6 @@ import {
     IdSchema,
     validateProjectActivityStats,
     validateProjectHealth,
-    validateProjectHealthContext,
     validateProjectProgress,
     validateWorkspaceInsights,
 } from '../utils/validators'
@@ -63,19 +60,6 @@ export class InsightsClient extends BaseClient {
             customHeaders: this.customHeaders,
         })
         return validateProjectHealth(response.data)
-    }
-
-    async getProjectHealthContext(projectId: string): Promise<ProjectHealthContext> {
-        IdSchema.parse(projectId)
-        const response = await request<ProjectHealthContext>({
-            httpMethod: 'GET',
-            baseUri: this.syncApiBase,
-            relativePath: getProjectInsightsHealthContextEndpoint(projectId),
-            apiToken: this.authToken,
-            customFetch: this.customFetch,
-            customHeaders: this.customHeaders,
-        })
-        return validateProjectHealthContext(response.data)
     }
 
     async getProjectProgress(projectId: string): Promise<ProjectProgress> {

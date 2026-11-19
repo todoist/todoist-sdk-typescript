@@ -132,10 +132,6 @@ export function getProjectInsightsHealthEndpoint(projectId: string): string {
     return `projects/${encodePathSegment(projectId)}/insights/health`
 }
 
-export function getProjectInsightsHealthContextEndpoint(projectId: string): string {
-    return `projects/${encodePathSegment(projectId)}/insights/health/context`
-}
-
 export function getProjectInsightsProgressEndpoint(projectId: string): string {
     return `projects/${encodePathSegment(projectId)}/insights/progress`
 }
