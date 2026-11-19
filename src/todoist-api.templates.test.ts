@@ -400,7 +400,7 @@ describe('TodoistApi template endpoints', () => {
                                 checked: false,
                             },
                         ],
-                        notes: [],
+                        notes: [{ item_id: 't1', content: 'Check this' }],
                         project_notes: [],
                         project_view_options_defaults: [],
                         reminders: [],
@@ -428,6 +428,7 @@ describe('TodoistApi template endpoints', () => {
                     },
                 },
             ])
+            expect(result.content.comments).toEqual([{ taskId: 't1', content: 'Check this' }])
         })
     })
 })
