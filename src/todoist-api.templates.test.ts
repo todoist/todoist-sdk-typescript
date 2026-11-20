@@ -564,6 +564,36 @@ describe('TodoistApi template endpoints', () => {
         })
     })
 
+    describe('deleteTemplate', () => {
+        test.each([
+            ['200 with a status body', () => HttpResponse.json({ status: 'ok' })],
+            ['204 with no body', () => new HttpResponse(null, { status: 204 })],
+        ])('deletes the saved template and resolves true on %s', async (_, respond) => {
+            let deleted = false
+            server.use(
+                http.delete(
+                    `${getTemplatesBaseUri()}templates/user/UT_28Rc62VC22j439VcPJMw9xgWx2`,
+                    () => {
+                        deleted = true
+                        return respond()
+                    },
+                ),
+            )
+            const api = getTarget()
+
+            const result = await api.deleteTemplate('UT_28Rc62VC22j439VcPJMw9xgWx2')
+
+            expect(deleted).toBe(true)
+            expect(result).toBe(true)
+        })
+
+        test('rejects an empty template ID before making a request', async () => {
+            const api = getTarget()
+
+            await expect(api.deleteTemplate('')).rejects.toThrow()
+        })
+    })
+
     describe('previewTemplateFromCsv', () => {
         test('uploads the CSV and renames sync names to SDK ones', async () => {
             mockedUploadMultipartFile.mockResolvedValue({

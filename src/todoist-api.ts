@@ -1860,6 +1860,17 @@ export class TodoistApi {
     }
 
     /**
+     * Deletes a saved template. Templates in the gallery can't be deleted.
+     *
+     * @param templateId - The `UT_` template ID.
+     * @param requestId - Optional custom identifier for the request.
+     * @returns A promise that resolves to `true` if successful.
+     */
+    async deleteTemplate(templateId: string, requestId?: string): Promise<boolean> {
+        return this.templateClient.deleteTemplate(templateId, requestId)
+    }
+
+    /**
      * Stages a CSV file and returns the template content it would create, without saving it.
      *
      * @param args - The CSV file to stage.

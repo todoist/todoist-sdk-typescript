@@ -14,7 +14,7 @@ import {
     ENDPOINT_REST_PROJECTS_FROM_TEMPLATE,
     TEMPLATE_PREVIEW,
 } from '../consts/endpoints'
-import { request } from '../transport/http-client'
+import { isSuccess, request } from '../transport/http-client'
 import { TodoistArgumentError } from '../types/errors'
 import type {
     CreateProjectFromTemplateArgs,
@@ -285,6 +285,20 @@ export class TemplateClient extends BaseClient {
             requestId: requestId,
         })
         return validateTemplate(data)
+    }
+
+    async deleteTemplate(templateId: string, requestId?: string): Promise<boolean> {
+        IdSchema.parse(templateId)
+        const response = await request({
+            httpMethod: 'DELETE',
+            baseUri: this.templatesApiBase,
+            relativePath: generatePath(ENDPOINT_REST_TEMPLATES_USER, templateId),
+            apiToken: this.authToken,
+            customFetch: this.customFetch,
+            customHeaders: this.customHeaders,
+            requestId: requestId,
+        })
+        return isSuccess(response)
     }
 
     async previewTemplateFromCsv(
