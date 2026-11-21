@@ -33,7 +33,12 @@ import type {
 } from '../types/tasks'
 import { generatePath, spreadIfDefined } from '../utils/request-helpers'
 import { processTaskContent } from '../utils/uncompletable-helpers'
-import { IdSchema, validateTask, validateTaskArray } from '../utils/validators'
+import {
+    IdSchema,
+    validateCompletedTaskItemArray,
+    validateTask,
+    validateTaskArray,
+} from '../utils/validators'
 import { BaseClient } from './base-client'
 
 const MAX_COMMAND_COUNT = 100
@@ -181,7 +186,7 @@ export class TaskClient extends BaseClient {
         return {
             projects: data.projects as Record<string, Record<string, unknown>>,
             sections: data.sections as Record<string, Record<string, unknown>>,
-            items: validateTaskArray(data.items as unknown[]),
+            items: validateCompletedTaskItemArray(data.items as unknown[]),
         }
     }
 

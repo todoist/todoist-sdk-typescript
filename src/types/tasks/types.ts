@@ -84,3 +84,25 @@ export const TaskSchema = z
  * @see https://developer.todoist.com/api/v1/#tag/Tasks
  */
 export type Task = z.infer<typeof TaskSchema>
+
+export const CompletedTaskItemSchema = z.object({
+    id: z.string(),
+    taskId: z.string(),
+    userId: z.string(),
+    projectId: z.string(),
+    sectionId: z.string().nullable(),
+    content: z.string(),
+    completedAt: z.coerce.date(),
+    noteCount: z.number().int(),
+    notes: z.array(z.unknown()),
+    itemObject: z.record(z.string(), z.unknown()).nullable(),
+    metaData: z.record(z.string(), z.unknown()).nullable(),
+})
+/**
+ * Represents an entry of the completed tasks list returned by `getAllCompletedTasks`.
+ *
+ * This is not a full {@link Task}: it only carries what the endpoint reports about
+ * the completion. Pass `annotateItems: true` to get the task itself in `itemObject`.
+ * @see https://developer.todoist.com/api/v1/#tag/Tasks/operation/get_all_completed_items_api_v1_tasks_completed_get
+ */
+export type CompletedTaskItem = z.infer<typeof CompletedTaskItemSchema>

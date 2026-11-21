@@ -37,7 +37,7 @@ import {
 } from '../types/projects/types'
 import { SectionSchema } from '../types/sections/types'
 import { type SyncResponse, SyncResponseSchema } from '../types/sync/response'
-import { TaskSchema } from '../types/tasks/types'
+import { CompletedTaskItemSchema, TaskSchema } from '../types/tasks/types'
 import {
     AddProjectFromTemplateIdResponseSchema,
     TemplateCategorySchema,
@@ -116,6 +116,9 @@ export const IdSchema = z
 
 export const { validate: validateTask, validateArray: validateTaskArray } =
     createValidator(TaskSchema)
+
+export const { validateArray: validateCompletedTaskItemArray } =
+    createValidator(CompletedTaskItemSchema)
 
 /**
  * Validates and parses a project input.
