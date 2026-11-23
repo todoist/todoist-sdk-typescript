@@ -14,6 +14,7 @@ import {
     ENDPOINT_REST_PROJECT_JOIN,
     ENDPOINT_SYNC,
 } from './consts/endpoints'
+import { useDefaultLocale } from './test-utils/default-locale'
 import { server, http, HttpResponse, mockApiResponse } from './test-utils/msw-setup'
 import {
     DEFAULT_AUTH_TOKEN,
@@ -116,6 +117,87 @@ describe('TodoistApi project endpoints', () => {
             const params = new URL(capturedUrl).searchParams
             expect(params.get('folder_id')).toBe('5')
             expect(params.get('workspace_id')).toBe('9')
+        })
+
+        describe('in a host whose default locale upper-cases i to İ', () => {
+            afterEach(() => {
+                vi.restoreAllMocks()
+            })
+
+            // `parent_id` must become `parentId`, not `parentİd`, and `workspace_id`
+            // must still pick the workspace project shape.
+            test.each(['tr-TR', 'az-AZ'])(
+                'parses personal and workspace projects in %s',
+                async (locale) => {
+                    useDefaultLocale(locale)
+                    server.use(
+                        http.get(`${getSyncBaseUri()}${ENDPOINT_REST_PROJECTS}`, () => {
+                            return HttpResponse.json(
+                                {
+                                    results: [
+                                        {
+                                            id: '123',
+                                            name: 'This is a project',
+                                            color: 'berry_red',
+                                            icon: null,
+                                            child_order: 3,
+                                            parent_id: null,
+                                            is_favorite: false,
+                                            is_shared: false,
+                                            inbox_project: false,
+                                            view_style: 'list',
+                                            can_assign_tasks: true,
+                                            is_archived: false,
+                                            is_deleted: false,
+                                            is_frozen: false,
+                                            created_at: '2020-09-08T12:00:00Z',
+                                            updated_at: '2020-09-08T12:00:00Z',
+                                            default_order: 3,
+                                            description: '',
+                                            is_collapsed: false,
+                                        },
+                                        {
+                                            id: '123',
+                                            name: 'This is a project',
+                                            color: 'berry_red',
+                                            icon: null,
+                                            child_order: 3,
+                                            is_favorite: false,
+                                            is_shared: true,
+                                            view_style: 'list',
+                                            can_assign_tasks: true,
+                                            is_archived: false,
+                                            is_deleted: false,
+                                            is_frozen: false,
+                                            created_at: '2020-09-08T12:00:00Z',
+                                            updated_at: '2020-09-08T12:00:00Z',
+                                            default_order: 3,
+                                            description: '',
+                                            is_collapsed: false,
+                                            workspace_id: '100',
+                                            folder_id: null,
+                                            collaborator_role_default: 'READ_WRITE',
+                                            is_invite_only: false,
+                                            is_link_sharing_enabled: true,
+                                            role: 'ADMIN',
+                                            status: 'ACTIVE',
+                                        },
+                                    ],
+                                    next_cursor: null,
+                                },
+                                { status: 200 },
+                            )
+                        }),
+                    )
+
+                    const { results } = await getTarget().getProjects()
+
+                    expect(results).toEqual([
+                        PROJECT_WITH_OPTIONALS_AS_NULL,
+                        DEFAULT_WORKSPACE_PROJECT,
+                    ])
+                },
+            )
         })
     })
 

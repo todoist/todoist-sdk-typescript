@@ -18,7 +18,10 @@ export function customCamelCase(input: string): string {
     if (isEmojiKey(input)) {
         return input
     }
-    return camelcase(input)
+    // API field names are ASCII identifiers, not text in the user's language. With its
+    // default options camelcase follows the host's locale, and a Turkish or Azerbaijani
+    // browser turns `parent_id` into `parentİd`, which the schemas then reject.
+    return camelcase(input, { locale: false })
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

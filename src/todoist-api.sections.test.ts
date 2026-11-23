@@ -6,6 +6,7 @@ import {
     SECTION_ARCHIVE,
     SECTION_UNARCHIVE,
 } from './consts/endpoints'
+import { useDefaultLocale } from './test-utils/default-locale'
 import { server, http, HttpResponse } from './test-utils/msw-setup'
 import { DEFAULT_AUTH_TOKEN, DEFAULT_SECTION } from './test-utils/test-defaults'
 import type { UpdateSectionArgs } from './types/sections/requests'
@@ -63,6 +64,48 @@ describe('TodoistApi section endpoints', () => {
 
             expect(results).toEqual(sections)
             expect(nextCursor).toBe('123')
+        })
+
+        describe('in a host whose default locale upper-cases i to İ', () => {
+            afterEach(() => {
+                vi.restoreAllMocks()
+            })
+
+            // `user_id` and `project_id` must become `userId` and `projectId`, not
+            // `userİd` and `projectİd`.
+            test.each(['tr-TR', 'az-AZ'])('parses sections in %s', async (locale) => {
+                useDefaultLocale(locale)
+                server.use(
+                    http.get(`${getSyncBaseUri()}${ENDPOINT_REST_SECTIONS}`, () => {
+                        return HttpResponse.json(
+                            {
+                                results: [
+                                    {
+                                        id: '456',
+                                        user_id: '5',
+                                        project_id: '123',
+                                        added_at: '2025-03-28T14:01:23.334881Z',
+                                        updated_at: '2025-03-28T14:01:23.334885Z',
+                                        archived_at: null,
+                                        name: 'This is a section',
+                                        description: null,
+                                        section_order: 3,
+                                        is_archived: false,
+                                        is_deleted: false,
+                                        is_collapsed: false,
+                                    },
+                                ],
+                                next_cursor: null,
+                            },
+                            { status: 200 },
+                        )
+                    }),
+                )
+
+                const { results } = await getTarget().getSections({ projectId: '123' })
+
+                expect(results).toEqual([DEFAULT_SECTION])
+            })
         })
     })
 
