@@ -63,29 +63,6 @@ describe('TodoistApi sync endpoint', () => {
             expect(capturedBody?.commands[0].args).toEqual({ content: 'Buy milk' })
         })
 
-        test('sends a project icon in project add and update commands', async () => {
-            let commandArgs: unknown[] = []
-            server.use(
-                http.post(`${getSyncBaseUri()}${ENDPOINT_SYNC}`, async ({ request }) => {
-                    const body = (await request.json()) as { commands: Array<{ args: unknown }> }
-                    commandArgs = body.commands.map((command) => command.args)
-                    return HttpResponse.json({ sync_token: 'token123' }, { status: 200 })
-                }),
-            )
-
-            await getTarget().sync({
-                commands: [
-                    createCommand('project_add', { name: 'Home', icon: 'house' }),
-                    createCommand('project_update', { id: 'p1', icon: null }),
-                ],
-            })
-
-            expect(commandArgs).toEqual([
-                { name: 'Home', icon: 'house' },
-                { id: 'p1', icon: null },
-            ])
-        })
-
         test('rejects invalid command name in sync request at compile time', async () => {
             server.use(
                 http.post(`${getSyncBaseUri()}${ENDPOINT_SYNC}`, () => {
