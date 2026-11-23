@@ -1,16 +1,12 @@
 name: Mirror to GitHub Packages
 
-# Publishes each release npm already has to GitHub Packages too, as the same
+# Publishes a version npm already has to GitHub Packages too, as the same
 # tarball. Projects that read the @todoist scope from GitHub Packages, where
 # Doist's private @todoist packages are, can then install this one from there:
-# npm reads a whole scope from one registry.
+# npm reads a whole scope from one registry. The release workflow publishes each
+# new release there itself; this is for a version it missed, such as one
+# released before it did, or one whose release run failed after npm had it.
 on:
-    # Sent for the GitHub release semantic-release creates with the release
-    # bot's token, once npm has the version.
-    release:
-        types: [published]
-    # Mirrors a version npm already has, such as one released before this
-    # workflow existed.
     workflow_dispatch:
         inputs:
             version:
@@ -30,7 +26,7 @@ permissions:
 # One group per version: Actions keeps a single pending run per group, so a shared group would
 # cancel queued mirrors of other versions. Mirrors of one version still run one at a time.
 concurrency:
-    group: ${{ github.workflow }}-${{ inputs.version || github.event.release.tag_name }}
+    group: ${{ github.workflow }}-${{ inputs.version }}
     cancel-in-progress: false
 
 jobs:
@@ -48,8 +44,8 @@ jobs:
             - name: Publish npm's tarball to GitHub Packages
               working-directory: ${{ runner.temp }}
               env:
-                  VERSION: ${{ inputs.version || github.event.release.tag_name }}
-                  TAG: ${{ inputs.tag || (github.event.release.prerelease && 'next' || 'latest') }}
+                  VERSION: ${{ inputs.version }}
+                  TAG: ${{ inputs.tag }}
                   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   version="${VERSION#v}"
@@ -67,7 +63,8 @@ jobs:
                       exit 0
                   fi
 
-                  tarball=$(npm pack "$spec" --registry=https://registry.npmjs.org/ --silent)
+                  # Prints only the tarball's name, or npm's error if it can't fetch it.
+                  tarball=$(npm pack "$spec" --registry=https://registry.npmjs.org/ --loglevel=error)
 
                   # npm's copy carries provenance for the release build; this
                   # copy is published here, so it claims none.

@@ -15,6 +15,8 @@ permissions:
     pull-requests: write
     # Enable the use of OIDC for trusted publishing and npm provenance
     id-token: write
+    # Publish each release to GitHub Packages too
+    packages: write
 
 # Release involves crucial steps that shouldn't be cancelled mid-run,
 # so new workflow runs are queued until the previous one finishes.
@@ -79,3 +81,33 @@ jobs:
                   # `npm ci` installs the git hooks (the `prepare` script). The pull request
                   # already ran every check, so the release commit and push skip them.
                   LEFTHOOK: '0'
+
+            # Projects that read the @todoist scope from GitHub Packages, where Doist's
+            # private @todoist packages are, install this one from there too: npm reads a
+            # whole scope from one registry. This publishes the tarball @semantic-release/npm
+            # packed for the release; with no tarball, nothing was released.
+            - name: Publish to GitHub Packages
+              working-directory: ${{ runner.temp }}
+              env:
+                  TARBALL_DIR: ${{ github.workspace }}/.tmp/release
+                  TAG: ${{ github.ref_name == 'next' && 'next' || 'latest' }}
+                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  shopt -s nullglob
+                  tarballs=("$TARBALL_DIR"/*.tgz)
+                  if [ "${#tarballs[@]}" -eq 0 ]; then
+                      echo "Nothing was released."
+                      exit 0
+                  fi
+
+                  # Publishes on GitHub Packages only, whatever setup-node set up for npm.
+                  github_npmrc="${RUNNER_TEMP}/github.npmrc"
+                  printf '%s\n' \
+                      'registry=https://npm.pkg.github.com/' \
+                      '@todoist:registry=https://npm.pkg.github.com/' \
+                      '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}' > "$github_npmrc"
+
+                  # npm's copy carries provenance for the release build; this
+                  # copy is published here, so it claims none.
+                  NPM_CONFIG_USERCONFIG="$github_npmrc" npm publish "${tarballs[0]}" \
+                      --ignore-scripts --provenance=false --tag="$TAG"

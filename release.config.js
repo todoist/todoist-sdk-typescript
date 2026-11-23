@@ -13,7 +13,9 @@ export default {
         ['@semantic-release/release-notes-generator', { preset: 'conventionalcommits' }],
         // Only update CHANGELOG.md and commit back on stable releases
         ...(isPrerelease ? [] : ['@semantic-release/changelog']),
-        '@semantic-release/npm',
+        // Keeps the tarball it packs, which the release workflow then publishes to
+        // GitHub Packages too, so that copy never waits for npm to serve the version.
+        ['@semantic-release/npm', { tarballDir: '.tmp/release' }],
         ...(isPrerelease
             ? []
             : [
