@@ -63,6 +63,23 @@ describe('TodoistApi project endpoints', () => {
 
             expect(project).toEqual(DEFAULT_PROJECT)
         })
+
+        // The API adds icons over time, so a name this SDK doesn't list yet must
+        // still parse; `null` is the default `#` icon.
+        test.each(['lightbulb', 'an_icon_added_later', null])(
+            'returns the project icon %s',
+            async (icon) => {
+                server.use(
+                    http.get(`${getSyncBaseUri()}${ENDPOINT_REST_PROJECTS}/123`, () => {
+                        return HttpResponse.json({ ...DEFAULT_PROJECT, icon }, { status: 200 })
+                    }),
+                )
+
+                const project = await getTarget().getProject('123')
+
+                expect(project.icon).toBe(icon)
+            },
+        )
     })
 
     describe('getProjects', () => {
@@ -154,6 +171,20 @@ describe('TodoistApi project endpoints', () => {
 
             expect(capturedBody).toMatchObject({ description: 'Quarterly OKRs' })
         })
+
+        test('forwards icon in the request body', async () => {
+            let capturedBody: unknown
+            server.use(
+                http.post(`${getSyncBaseUri()}${ENDPOINT_REST_PROJECTS}`, async ({ request }) => {
+                    capturedBody = await request.json()
+                    return HttpResponse.json(DEFAULT_PROJECT, { status: 200 })
+                }),
+            )
+
+            await getTarget().addProject({ ...DEFAULT_ADD_PROJECT_ARGS, icon: 'house' })
+
+            expect(capturedBody).toMatchObject({ icon: 'house' })
+        })
     })
 
     describe('updateProject', () => {
@@ -219,6 +250,25 @@ describe('TodoistApi project endpoints', () => {
 
             expect(capturedBodies[0]).toEqual({ description: 'Updated scope' })
             expect(capturedBodies[1]).toEqual({ description: '' })
+        })
+
+        test('sends icon, preserving null to reset it to the default icon', async () => {
+            const capturedBodies: unknown[] = []
+            server.use(
+                http.post(
+                    `${getSyncBaseUri()}${ENDPOINT_REST_PROJECTS}/123`,
+                    async ({ request }) => {
+                        capturedBodies.push(await request.json())
+                        return HttpResponse.json(DEFAULT_PROJECT, { status: 200 })
+                    },
+                ),
+            )
+            const api = getTarget()
+
+            await api.updateProject('123', { icon: 'house' })
+            await api.updateProject('123', { icon: null })
+
+            expect(capturedBodies).toEqual([{ icon: 'house' }, { icon: null }])
         })
     })
 

@@ -1,5 +1,5 @@
 import type { ColorKey } from '../../../utils/colors'
-import type { ProjectViewStyle, ProjectVisibility } from '../../projects/types'
+import type { ProjectIcon, ProjectViewStyle, ProjectVisibility } from '../../projects/types'
 import type { WorkspaceRole, CollaboratorRole } from '../../workspaces/types'
 import type { ProjectStatus } from './shared'
 
@@ -20,6 +20,8 @@ export type ProjectAddArgs = {
     orderKey?: string
     defaultOrder?: number
     color?: ColorKey
+    /** Omit it or pass `null` for the default `#` icon. */
+    icon?: ProjectIcon | null
     description?: string
     isFavorite?: boolean
     isInviteOnly?: boolean
@@ -37,6 +39,8 @@ export type ProjectUpdateArgs = {
     defaultOrderKey?: string
     name?: string
     color?: ColorKey
+    /** Pass `null` to reset to the default `#` icon; omit it to keep the current one. */
+    icon?: ProjectIcon | null
     description?: string
     isFavorite?: boolean
     isCollapsed?: boolean

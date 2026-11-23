@@ -10,6 +10,7 @@ import type { User } from '../users/types'
 import type { CollaboratorRole, WorkspaceRole } from '../workspaces/types'
 import type {
     PersonalProject,
+    ProjectIcon,
     ProjectViewStyle,
     ProjectVisibility,
     WorkspaceProject,
@@ -68,6 +69,8 @@ export type AddProjectArgs = {
     name: string
     parentId?: string
     color?: ColorKey
+    /** Project icon. Omit it or pass `null` for the default `#` icon. */
+    icon?: ProjectIcon | null
     isFavorite?: boolean
     viewStyle?: ProjectViewStyle
     workspaceId?: string
@@ -82,6 +85,11 @@ export type AddProjectArgs = {
 export type UpdateProjectArgs = {
     name?: string
     color?: ColorKey
+    /**
+     * Project icon. Pass `null` to reset it to the default `#` icon. Omit this
+     * field to keep it unchanged.
+     */
+    icon?: ProjectIcon | null
     isFavorite?: boolean
     viewStyle?: ProjectViewStyle
     /**

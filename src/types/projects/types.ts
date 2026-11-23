@@ -11,6 +11,12 @@ export const BaseProjectSchema = z.object({
     childOrder: z.number().int(),
     orderKey: z.string().nullable().optional(),
     color: z.string(),
+    /**
+     * Icon name (see {@link PROJECT_ICONS}), or `null` for the default `#` icon.
+     * Not an enum: the API adds icons over time, so show the default icon for a
+     * name you don't recognise.
+     */
+    icon: z.string().nullable().optional(),
     createdAt: z.coerce.date().nullable(),
     isArchived: z.boolean(),
     isDeleted: z.boolean(),
@@ -163,3 +169,65 @@ export const PROJECT_VIEW_STYLES = ['list', 'board', 'calendar', 'table'] as con
  * @see https://developer.todoist.com/api/v1/#tag/Projects
  */
 export type ProjectViewStyle = (typeof PROJECT_VIEW_STYLES)[number]
+
+/**
+ * Icon names a project can be given, in the order the API added them.
+ * The API adds icons over time; a project read back may carry a name that is
+ * not listed here yet.
+ */
+export const PROJECT_ICONS = [
+    'briefcase',
+    'folder',
+    'diagram',
+    'headset',
+    'microphone',
+    'flag',
+    'bullseye',
+    'house',
+    'heart',
+    'airplane',
+    'gift',
+    'pin',
+    'school_cap',
+    'lightbulb',
+    'star',
+    'command_prompt',
+    'laptop',
+    'envelope',
+    'calendar',
+    'person',
+    'sofa',
+    'cup_and_heat_waves',
+    'paintpalette',
+    'broom',
+    'sun_max',
+    'moon',
+    'beach_umbrella',
+    'pizza',
+    'checkmark_line_3',
+    'basketball',
+    'face_smiling',
+    'dog',
+    'dollarsign',
+    'smartphone',
+    'person_2',
+    'chart_line_uptrend_xyaxis_in_square',
+    'laboratory_flask',
+    'telescope',
+    'book',
+    'document',
+    'sparkles',
+    'video',
+    'paintbrush',
+    'puzzlepiece_extension',
+    'clock',
+    'pills',
+    'birthday_cake',
+    'stethoscope',
+    'apple',
+] as const
+/**
+ * Name of a project icon that can be set on a project.
+ * @see https://developer.todoist.com/api/v1/#tag/Projects
+ */
+export type ProjectIcon = (typeof PROJECT_ICONS)[number]
