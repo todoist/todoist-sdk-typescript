@@ -206,11 +206,18 @@ function componentsAsUtcTimestamp({
     return date.getTime()
 }
 
-/** Resolves a zoned wall clock to an instant, including daylight-saving offsets. */
-function timestampForWallClock(
-    components: DateComponents,
-    formatter: Intl.DateTimeFormat,
-): number | null {
+const DAY_MS = 24 * 60 * 60 * 1_000
+
+function offsetAt(timestamp: number, formatter: Intl.DateTimeFormat): number {
+    return componentsAsUtcTimestamp(componentsAt(timestamp, formatter)) - timestamp
+}
+
+/**
+ * Resolves a zoned wall clock to an instant, including daylight-saving offsets.
+ * A wall clock skipped when clocks spring forward is read with the offset from
+ * before the jump, as JavaScript's Date and Python's zoneinfo do.
+ */
+function timestampForWallClock(components: DateComponents, formatter: Intl.DateTimeFormat): number {
     const target = componentsAsUtcTimestamp(components)
     let timestamp = target
 
@@ -220,7 +227,8 @@ function timestampForWallClock(
         timestamp += adjustment
     }
 
-    return null
+    // No instant shows this wall clock: it falls in a skipped hour.
+    return target - offsetAt(target - DAY_MS, formatter)
 }
 
 function dateSortValueAt(timestamp: number, formatter: Intl.DateTimeFormat): DateSortValue | null {
@@ -243,8 +251,7 @@ function parseZonedFloatingDateTime(
     const components = parseDateTimeComponents(value)
     if (!components) return null
 
-    const timestamp = timestampForWallClock(components, sourceFormatter)
-    return timestamp === null ? null : dateSortValueAt(timestamp, accountFormatter)
+    return dateSortValueAt(timestampForWallClock(components, sourceFormatter), accountFormatter)
 }
 
 function parseTaskDate(

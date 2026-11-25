@@ -374,6 +374,58 @@ describe('sortTasks date handling', () => {
         ).toEqual(['earlier-edt', 'later-est'])
     })
 
+    test('sorts a floating time in the skipped DST hour as the moment clocks reach it', () => {
+        // Clocks in New York jump from 02:00 to 03:00 on 2026-03-08, so 02:30 never
+        // happens. Like JavaScript's Date and Python's zoneinfo, read it with the
+        // offset from before the jump: 02:30 EST, which is 03:30 EDT.
+        const tasks = [
+            makeTask({ id: 'undated' }),
+            makeTask({ id: 'skipped-0230', due: due('2026-03-08T02:30:00') }),
+            makeTask({ id: 'fixed-0345', due: due('2026-03-08T07:45:00Z') }),
+            makeTask({ id: 'fixed-0315', due: due('2026-03-08T07:15:00Z') }),
+            makeTask({ id: 'floating-0100', due: due('2026-03-08T01:00:00') }),
+        ]
+
+        expect(
+            ids(
+                sortTasks(
+                    tasks,
+                    { sortedBy: 'DUE_DATE', defaultOrder: 'PRIORITY_FIRST' },
+                    { timezone: 'America/New_York' },
+                ),
+            ),
+        ).toEqual(['floating-0100', 'fixed-0315', 'skipped-0230', 'fixed-0345', 'undated'])
+    })
+
+    test('sorts an IANA-tagged floating time in its own skipped DST hour', () => {
+        const tasks = [
+            makeTask({ id: 'undated' }),
+            makeTask({ id: 'fixed-0145-utc', due: due('2026-03-29T01:45:00Z') }),
+            makeTask({
+                id: 'skipped-london-0130',
+                due: due('2026-03-29T01:30:00', 'Europe/London'),
+            }),
+            makeTask({ id: 'fixed-0045-utc', due: due('2026-03-29T00:45:00Z') }),
+            makeTask({ id: 'fixed-0115-utc', due: due('2026-03-29T01:15:00Z') }),
+        ]
+
+        expect(
+            ids(
+                sortTasks(
+                    tasks,
+                    { sortedBy: 'DUE_DATE', defaultOrder: 'PRIORITY_FIRST' },
+                    { timezone: 'UTC' },
+                ),
+            ),
+        ).toEqual([
+            'fixed-0045-utc',
+            'fixed-0115-utc',
+            'skipped-london-0130',
+            'fixed-0145-utc',
+            'undated',
+        ])
+    })
+
     test('uses UTC when no account timezone is supplied', () => {
         const tasks = [
             makeTask({ id: 'floating-9', due: due('2026-02-01T09:00:00') }),
