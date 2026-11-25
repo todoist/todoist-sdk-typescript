@@ -87,7 +87,6 @@ jobs:
             # whole scope from one registry. This publishes the tarball @semantic-release/npm
             # packed for the release; with no tarball, nothing was released.
             - name: Publish to GitHub Packages
-              working-directory: ${{ runner.temp }}
               env:
                   TARBALL_DIR: ${{ github.workspace }}/.tmp/release
                   TAG: ${{ github.ref_name == 'next' && 'next' || 'latest' }}
@@ -106,6 +105,12 @@ jobs:
                       'registry=https://npm.pkg.github.com/' \
                       '@todoist:registry=https://npm.pkg.github.com/' \
                       '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}' > "$github_npmrc"
+
+                  # npm reads an .npmrc in the working directory as project config, which wins
+                  # over NPM_CONFIG_USERCONFIG. setup-node writes its npm config to
+                  # RUNNER_TEMP/.npmrc, so publishing from RUNNER_TEMP would go to npm. In an
+                  # empty directory only the GitHub Packages config above applies.
+                  cd "$(mktemp -d)"
 
                   # npm's copy carries provenance for the release build; this
                   # copy is published here, so it claims none.
