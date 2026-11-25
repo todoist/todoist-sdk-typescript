@@ -54,11 +54,14 @@ jobs:
                   path: './website/build'
 
             # deploy-pages looks the artifact up straight after the upload, and the artifact
-            # service can take from under a second to most of a minute to list it. A missed
-            # lookup fails before anything is deployed ("No artifacts named github-pages were
-            # found"), so the deploy is tried once more after a pause. Re-running the job
-            # doesn't help: it uploads a second artifact, and deploy-pages refuses two.
-            # https://github.com/actions/deploy-pages/issues/451
+            # service can take from under a second to most of a minute to list it, failing the
+            # deploy with "No artifacts named github-pages were found":
+            # https://github.com/actions/deploy-pages/issues/451. Pages can also fail a
+            # deployment it accepted ("Deployment failed, try again later."). Neither leaves a
+            # live deployment behind (a missed lookup creates none, and deploy-pages leaves a
+            # failed one failed or cancels it), so the deploy is tried once more after a
+            # pause, whichever way it failed. Re-running the job doesn't help: it uploads a
+            # second artifact, and deploy-pages refuses two.
             - name: Deploy to GitHub Pages
               id: deployment
               continue-on-error: true
