@@ -23,7 +23,7 @@ jobs:
     deploy:
         environment:
             name: github-pages
-            url: ${{ steps.deployment.outputs.page_url }}
+            url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -53,6 +53,22 @@ jobs:
               with:
                   path: './website/build'
 
+            # deploy-pages looks the artifact up straight after the upload, and the artifact
+            # service can take from under a second to most of a minute to list it. A missed
+            # lookup fails before anything is deployed ("No artifacts named github-pages were
+            # found"), so the deploy is tried once more after a pause. Re-running the job
+            # doesn't help: it uploads a second artifact, and deploy-pages refuses two.
+            # https://github.com/actions/deploy-pages/issues/451
             - name: Deploy to GitHub Pages
               id: deployment
+              continue-on-error: true
+              uses: actions/deploy-pages@v4
+
+            - name: Wait for the artifact to be listed
+              if: steps.deployment.outcome == 'failure'
+              run: sleep 60
+
+            - name: Deploy to GitHub Pages (retry)
+              id: deployment_retry
+              if: steps.deployment.outcome == 'failure'
               uses: actions/deploy-pages@v4
