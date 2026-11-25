@@ -1,3 +1,9 @@
+## [24.1.4](https://github.com/todoist/todoist-sdk-typescript/compare/v24.1.3...v24.1.4) (2026-11-25)
+
+### Bug Fixes
+
+* **task-sorting:** sort a due time in the skipped DST hour by its moment ([#793](https://github.com/todoist/todoist-sdk-typescript/issues/793)) ([be5ff52](https://github.com/todoist/todoist-sdk-typescript/commit/be5ff52f5646bf0c01b454b808046186959df346))
+
 ## [24.1.3](https://github.com/todoist/todoist-sdk-typescript/compare/v24.1.2...v24.1.3) (2026-11-25)
 
 ### Bug Fixes
