@@ -254,5 +254,32 @@ describe('TodoistApi user endpoints', () => {
             expect(stats.goals.vacationMode).toBe(true)
             expect(stats.goals.ignoreDays).toEqual(['Friday', 'Saturday'])
         })
+
+        test('keys projectColors by the project IDs the API sent', async () => {
+            // The fixture is already camel-cased, but the API sends this field as `project_colors`.
+            const { projectColors, ...rest } = PRODUCTIVITY_STATS_RESPONSE
+            server.use(
+                http.get(`${getSyncBaseUri()}${ENDPOINT_REST_PRODUCTIVITY}`, () => {
+                    return HttpResponse.json(
+                        {
+                            ...rest,
+                            project_colors: {
+                                '6Jf8VQXxpwv56VQ7': 'berry_red',
+                                '6X7rM8997g3RQmvh': 'blue',
+                            },
+                        },
+                        { status: 200 },
+                    )
+                }),
+            )
+            const api = getTarget()
+
+            const stats = await api.getProductivityStats()
+
+            expect(stats.projectColors).toEqual({
+                '6Jf8VQXxpwv56VQ7': 'berry_red',
+                '6X7rM8997g3RQmvh': 'blue',
+            })
+        })
     })
 })

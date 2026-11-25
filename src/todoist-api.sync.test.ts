@@ -461,6 +461,27 @@ describe('TodoistApi sync endpoint', () => {
         })
     })
 
+    describe('day orders', () => {
+        test('keys dayOrders by the task IDs the API sent', async () => {
+            server.use(
+                http.post(`${getSyncBaseUri()}${ENDPOINT_SYNC}`, () => {
+                    return HttpResponse.json(
+                        {
+                            sync_token: 'token123',
+                            day_orders: { '6Jf8VQXxpwv56VQ7': 1, '6X7rM8997g3RQmvh': 2 },
+                        },
+                        { status: 200 },
+                    )
+                }),
+            )
+            const api = getTarget()
+
+            const response = await api.sync({ resourceTypes: ['day_orders'], syncToken: '*' })
+
+            expect(response.dayOrders).toEqual({ '6Jf8VQXxpwv56VQ7': 1, '6X7rM8997g3RQmvh': 2 })
+        })
+    })
+
     describe('command results', () => {
         // UUIDs whose segments start with a letter, so camel-casing the response
         // keys would rewrite them.

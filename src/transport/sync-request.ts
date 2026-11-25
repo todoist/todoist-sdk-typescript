@@ -123,11 +123,17 @@ function preprocessSyncCommands(commands: SyncCommand[]): SyncCommand[] {
 }
 
 /**
- * Response fields keyed by the command `uuid` / `tempId` the caller sent. Their
- * keys must reach the caller unchanged so each entry can be matched to its
- * command; camel-casing would rewrite them (`a3bb189e-8bf9-…` → `a3Bb189E8Bf9…`).
+ * Response fields keyed by identifiers rather than field names, whose keys must reach
+ * the caller unchanged; camel-casing would rewrite them. `sync_status` and
+ * `temp_id_mapping` are keyed by the command `uuid` / `tempId` the caller sent, so each
+ * entry can be matched to its command (`a3bb189e-8bf9-…` → `a3Bb189E8Bf9…`).
+ * `day_orders` is keyed by task ID (`6Jf8VQXx` → `6Jf8VqXx`).
  */
-const COMMAND_KEYED_FIELDS: ReadonlySet<string> = new Set(['sync_status', 'temp_id_mapping'])
+const ID_KEYED_FIELDS: ReadonlySet<string> = new Set([
+    'sync_status',
+    'temp_id_mapping',
+    'day_orders',
+])
 
 /**
  * Makes a request to the Sync API and handles error checking.
@@ -163,7 +169,7 @@ export async function performSyncRequest(
         payload: processedRequest,
         requestId: requestId,
         hasSyncCommands: hasSyncCommands,
-        opaqueKeyMaps: COMMAND_KEYED_FIELDS,
+        opaqueKeyMaps: ID_KEYED_FIELDS,
     })
 
     const syncStatus = response.data.syncStatus as SyncResponse['syncStatus']
